@@ -3,6 +3,8 @@ import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Learn from "./pages/Learn";
 import Discover from "./pages/Discover";
+import DiscoverSkin from "./pages/DiscoverSkin";
+import DiscoverSkinResult from "./pages/DiscoverSkin/Result";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +33,16 @@ export const routers = [
     path: "/discover",
     name: "discover",
     element: <Discover />,
+  },
+  {
+    path: "/descubri-tu-piel",
+    name: "discover-skin",
+    element: <DiscoverSkin />,
+  },
+  {
+    path: "/descubri-tu-piel/resultado",
+    name: "discover-skin-result",
+    element: <DiscoverSkinResult />,
   },
   {
     path: "/about",
