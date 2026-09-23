@@ -5,26 +5,16 @@ import { cn } from "@/lib/utils";
 
 /** Campo claro de toda la zona comercial. */
 const FIELD = "#F2EBDD";
-/** Tono con el que cierra El Ciclo (velo de salida sobre RESTORE). */
-const HANDOFF_IN = "#684F3E";
-
-/**
- * Entrega desde El Ciclo: una transición cromática corta, no una escena.
- * Siete unidades de viewport alcanzan para que el tierra de RESTORE no corte
- * seco contra el crema, sin que el paso se lea como un bloque propio.
- */
-const ENTRY_RAMP = `linear-gradient(180deg,
-  ${HANDOFF_IN} 0%,
-  #8D7561 28%,
-  #C4B49C 62%,
-  ${FIELD} 100%)`;
-
 /**
  * HOME 03 — Pack x4 / Ritual completo.
  *
  * Primera pieza de la zona comercial: a partir de acá la Home vive en campo
  * claro y sigue así hasta el shopping de 04B, que usa exactamente el mismo
  * crema. Entre una sección y otra no hay transición ni costura.
+ *
+ * El campo arranca crema desde el primer píxel: el paso desde El Ciclo es un
+ * corte directo, sin rampa cromática. Por eso tampoco hay marcador de tono —
+ * el header va en ink desde el borde, que es el valor por defecto.
  *
  * Composición horizontal simple: copy comercial a la izquierda y el visual del
  * pack a la derecha dentro de una forma arqueada tipo portal. Nada de card
@@ -68,20 +58,6 @@ export function PackRitualSection() {
       className="relative scroll-mt-24 overflow-hidden"
       style={{ backgroundColor: FIELD }}
     >
-      {/* Transición cromática de entrada desde El Ciclo. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[7vh]"
-        style={{ backgroundImage: ENTRY_RAMP }}
-      />
-      {/* Tramo en el que el campo todavía viene oscuro: el header invierte a
-          texto ivory al pasar por encima. */}
-      <div
-        aria-hidden="true"
-        data-header-tone="light"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[4vh]"
-      />
-
       <div
         ref={revealRef}
         className="relative mx-auto grid w-full max-w-[1320px] items-center gap-14 px-6 pb-[clamp(72px,10vh,120px)] pt-[clamp(96px,12vh,140px)] md:px-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-16"

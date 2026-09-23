@@ -8,7 +8,6 @@ import { FourPhasesSection } from "@/components/sections/FourPhasesSection";
 import { InsideOutsideSection } from "@/components/sections/InsideOutsideSection";
 import { RitualSection } from "@/components/sections/RitualSection";
 import { RhythmSection } from "@/components/sections/RhythmSection";
-import { RegisterSection } from "@/components/sections/RegisterSection";
 import { DiscoverYourRhythmSection } from "@/components/sections/DiscoverYourRhythmSection";
 import { LearnSection } from "@/components/sections/LearnSection";
 import { InstagramUniverseSection } from "@/components/sections/InstagramUniverseSection";
@@ -19,8 +18,12 @@ import { ClosingSection } from "@/components/sections/ClosingSection";
  *
  * El agua (Sprint 02) deja de interrumpir el inicio: ahora se llega rápido al
  * producto — Hero → El Ciclo → Pack x4 → productos individuales — y la
- * experiencia sensorial vuelve después de la zona comercial, junto a El
- * Registro, tal como define HOME 05.
+ * experiencia sensorial llega después de la zona comercial como pausa, con El
+ * Registro fusionado dentro de la misma escena (HOME 05).
+ *
+ * `RegisterSection` ya no se monta: su newsletter vive ahora dentro de
+ * `RhythmSection`. El componente se conserva en el repo por si se necesita un
+ * bloque de registro autónomo en otra página.
  *
  * InsideOutsideSection (Sprint 05) y RitualSection (Sprint 06) se conservan
  * montadas donde estaban: su ubicación definitiva se decide en sus sprints.
@@ -35,10 +38,9 @@ const Home = () => {
         <CycleSection />
         <PackRitualSection />
         <FourPhasesSection />
+        <RhythmSection />
         <InsideOutsideSection />
         <RitualSection />
-        <RhythmSection />
-        <RegisterSection />
         <DiscoverYourRhythmSection />
         <LearnSection />
         <InstagramUniverseSection />

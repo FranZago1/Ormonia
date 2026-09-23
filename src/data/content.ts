@@ -77,12 +77,29 @@ export const heroMedia = {
   alt: "Pradera abierta bajo luz cálida con un caballo pastando; tonos verdes y tierra.",
 };
 
+/**
+ * HOME 05 — Agua / El Ritmo.
+ *
+ * Dos momentos de texto, no más: la escena es una pausa sensorial, no un
+ * bloque explicativo. El agua sostiene el aire; el copy solo lo puntúa.
+ */
+/**
+ * HOME 05 — Agua / El Ritmo.
+ *
+ * Dos momentos, sin eyebrow: la escena es una pausa sensorial y cuantos menos
+ * elementos tenga, mejor respira. El relevo entre ambos es continuo, no un
+ * cambio de estado.
+ */
 export const rhythmCopy = {
-  eyebrow: "El ritmo",
-  statements: [
-    "Tu piel no es igual todos los días.",
-    "Tu cuerpo tampoco.",
-    "Entonces, ¿por qué tu skincare debería serlo?",
+  moments: [
+    {
+      lines: ["La piel también", "tiene un ritmo."],
+      note: "Cambia, responde, se transforma." as string | null,
+    },
+    {
+      lines: ["Aprender a mirarla", "cambia la forma de cuidarla."],
+      note: null as string | null,
+    },
   ],
 };
 
@@ -200,13 +217,22 @@ export const learnCopy = {
   ],
 };
 
+/**
+ * El Registro — newsletter. Vive dentro de la escena de agua (HOME 05).
+ *
+ * Copy deliberadamente corto: la interfaz necesita respirar. Sin cadencias,
+ * frecuencias ni promesas editoriales de más.
+ *
+ * `disclaimer` se conserva para `RegisterSection`, el bloque autónomo que
+ * queda disponible en el repo; la escena de agua no lo renderiza.
+ */
 export const registerCopy = {
-  eyebrow: "El registro",
-  title: "Únete al registro.",
-  body: "Primeras fórmulas, notas editoriales y el lanzamiento de AURA. Sin ruido, solo lo esencial.",
-  placeholder: "Tu correo",
-  cta: "Registrarme",
-  disclaimer: "Al registrarte aceptas recibir comunicaciones de ORMONIA.",
+  eyebrow: "El Registro",
+  title: "El Registro",
+  body: "Ideas, fórmulas y rituales para entender mejor tu piel y elegir cómo cuidarla.",
+  placeholder: "Tu email",
+  cta: "Recibir El Registro",
+  disclaimer: "Al registrarte aceptás recibir comunicaciones de ORMONIA.",
 };
 
 export const instagramCopy = {

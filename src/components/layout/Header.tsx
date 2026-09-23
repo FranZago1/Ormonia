@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { ScrollTrigger } from "@/lib/gsap";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -80,17 +79,44 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
 
   const direction = useScrollDirection(12);
 
-  // Mientras la franja de envío siga a la vista, el header se apoya debajo de
-  // ella; después queda pegado al borde superior. Se escribe directo al DOM
-  // para no re-renderizar en cada frame de scroll.
+  /*
+   * Un solo bucle de scroll gobierna las tres cosas que dependen de él: el
+   * apoyo del header bajo la franja, la salida del Hero y el tono del texto.
+   *
+   * El tono se resuelve por geometría en cada frame —qué escena marcada cruza
+   * la línea del header— en vez de depender de los bordes de un ScrollTrigger.
+   * Resolverlo solo en los bordes dejaba el color desactualizado cuando el
+   * header reaparecía al scrollear hacia arriba sin cruzar ninguno.
+   *
+   * Gana el ÚLTIMO marcador coincidente en orden de DOM, así un marcador hijo
+   * pisa a su sección contenedora, que es la precedencia correcta.
+   */
   useEffect(() => {
     const header = headerRef.current;
     let heroEnd = 0;
     let ticking = false;
 
-    const measureHero = () => {
+    const measure = () => {
       const hero = document.querySelector<HTMLElement>("[data-header-hero]");
       heroEnd = hero ? hero.offsetTop + hero.offsetHeight : 0;
+    };
+
+    /*
+     * Los marcadores se consultan en cada frame en vez de cachearse: el pin de
+     * ScrollTrigger reescribe el DOM después de montar el header, y una lista
+     * cacheada queda desactualizada. Son unos pocos elementos con un selector
+     * de atributo — el costo es despreciable frente a la clase de bug que evita.
+     */
+    const resolveTone = () => {
+      const scenes = document.querySelectorAll<HTMLElement>("[data-header-tone]");
+      let found: HeaderTone | null = null;
+      scenes.forEach((scene) => {
+        const rect = scene.getBoundingClientRect();
+        if (rect.top <= TONE_LINE && rect.bottom > TONE_LINE) {
+          found = (scene.dataset.headerTone as HeaderTone) ?? null;
+        }
+      });
+      setTone(found ?? defaultTone);
     };
 
     const update = () => {
@@ -103,6 +129,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
       }
 
       setPastHero(y > Math.max(0, heroEnd - HERO_EXIT_LEAD));
+      resolveTone();
     };
 
     const onScroll = () => {
@@ -112,11 +139,11 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
     };
 
     const onResize = () => {
-      measureHero();
+      measure();
       onScroll();
     };
 
-    measureHero();
+    measure();
     update();
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -125,42 +152,6 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
     };
-  }, []);
-
-  // Contraste adaptativo: cada escena marcada con data-header-tone toma el
-  // control mientras pasa por detrás del header. La resolución se hace por
-  // geometría (qué escena cruza la línea del header) en vez de confiar en el
-  // orden de los toggles, así el estado inicial ya es correcto al cargar.
-  useEffect(() => {
-    const scenes = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-header-tone]")
-    );
-    if (scenes.length === 0) {
-      setTone(defaultTone);
-      return;
-    }
-
-    const resolve = () => {
-      const scene = scenes.find((el) => {
-        const rect = el.getBoundingClientRect();
-        return rect.top <= TONE_LINE && rect.bottom > TONE_LINE;
-      });
-      setTone((scene?.dataset.headerTone as HeaderTone) ?? defaultTone);
-    };
-
-    resolve();
-
-    const triggers = scenes.map((scene) =>
-      ScrollTrigger.create({
-        trigger: scene,
-        start: `top top+=${TONE_LINE}`,
-        end: `bottom top+=${TONE_LINE}`,
-        onToggle: resolve,
-        onRefresh: resolve,
-      })
-    );
-
-    return () => triggers.forEach((t) => t.kill());
   }, [defaultTone]);
 
   const inHeroScene = !pastHero;
