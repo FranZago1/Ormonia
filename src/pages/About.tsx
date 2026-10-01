@@ -5,8 +5,10 @@ import { EditorialHeading } from "@/components/ui/EditorialHeading";
 import { NarrativeText } from "@/components/ui/NarrativeText";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { pageShells } from "@/data/content";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const About = () => {
+  usePageTitle("Nosotros");
   const shell = pageShells.about;
   return (
     <>

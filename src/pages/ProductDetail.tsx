@@ -9,10 +9,12 @@ import { ProductMeta } from "@/components/ui/ProductMeta";
 import { IngredientList } from "@/components/ui/IngredientList";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { getProductBySlug, products } from "@/data/products";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const product = slug ? getProductBySlug(slug) : undefined;
+  usePageTitle(product ? product.name : "Serum no encontrado");
 
   // Slug inválido: estado controlado, no rompe la página.
   if (!product) {

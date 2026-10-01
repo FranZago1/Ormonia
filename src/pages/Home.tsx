@@ -11,6 +11,7 @@ import { LearnSection } from "@/components/sections/LearnSection";
 import { InstagramUniverseSection } from "@/components/sections/InstagramUniverseSection";
 import { ClosingSection } from "@/components/sections/ClosingSection";
 import { useHashScroll } from "@/hooks/useHashScroll";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 /**
  * Orden de la Home tras el Integration Pass 01–03.
@@ -35,6 +36,7 @@ import { useHashScroll } from "@/hooks/useHashScroll";
  * `DiscoverYourSkinSection`. El componente se conserva en el repo.
  */
 const Home = () => {
+  usePageTitle();
   // Llegadas desde otra página a un ancla de Home ("/#pack-x4", "/#ritmo").
   useHashScroll();
 

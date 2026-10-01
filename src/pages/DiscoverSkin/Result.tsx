@@ -3,6 +3,7 @@ import { skinReadingPlaceholder, skinResultCopy } from "@/data/skinQuiz";
 import { clearStoredQuiz, readStoredQuiz } from "@/hooks/useSkinQuiz";
 import { hasAnswers, readSkin, type QuizAnswers } from "@/lib/skinQuiz";
 import { DiscoverShell } from "./DiscoverShell";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 /**
  * /descubri-tu-piel/resultado — shell del resultado.
@@ -24,6 +25,7 @@ import { DiscoverShell } from "./DiscoverShell";
  * resultado que nadie generó.
  */
 const DiscoverSkinResult = () => {
+  usePageTitle("Tu lectura");
   const location = useLocation();
   const answers =
     (location.state as { answers?: QuizAnswers } | null)?.answers ??

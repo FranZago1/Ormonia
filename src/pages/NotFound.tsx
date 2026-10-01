@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { notFoundCopy } from "@/data/content";
 import { CTAButton } from "@/components/ui/CTAButton";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const NotFound = () => {
+  usePageTitle("Página no encontrada");
   const location = useLocation();
 
   useEffect(() => {

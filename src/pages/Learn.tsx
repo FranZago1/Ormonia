@@ -6,6 +6,7 @@ import {
   ReadingsHeader,
 } from "@/components/sections/LearnSection";
 import { learnCopy } from "@/data/content";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 /**
  * /learn — índice de Lecturas para el ritual.
@@ -14,6 +15,7 @@ import { learnCopy } from "@/data/content";
  * cuando se publique una lectura, aparece en los dos lugares a la vez.
  */
 const Learn = () => {
+  usePageTitle("Lecturas para el ritual");
   const [featured, ...rest] = learnCopy.readings;
 
   return (

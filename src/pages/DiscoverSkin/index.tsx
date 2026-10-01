@@ -7,6 +7,7 @@ import { AnswerOption } from "./AnswerOption";
 import { DiscoverShell } from "./DiscoverShell";
 import { EmailCapture } from "./EmailCapture";
 import { WhyWeAsk } from "./WhyWeAsk";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 /** Duración del relevo entre pasos. La salida ocupa la primera mitad. */
 const LEAVE_MS = 190;
@@ -23,6 +24,7 @@ const LEAVE_MS = 190;
  * de opciones en `lib/skinQuiz`. Esta vista solo presenta y encamina.
  */
 const DiscoverSkin = () => {
+  usePageTitle("Descubrí tu piel");
   const navigate = useNavigate();
   const quiz = useSkinQuiz(skinQuizQuestions);
   const [leaving, setLeaving] = useState(false);
