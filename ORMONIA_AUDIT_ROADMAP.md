@@ -8,6 +8,57 @@
 
 ---
 
+## 0. Estado de ejecución (actualizado al cierre de la sesión)
+
+Todo en la rama `claude/stoic-keller-zhrb8m`. Cada commit pasó `pnpm check` (lint + typecheck real), `pnpm build:prod` y una revisión en el navegador (Playwright, desktop 1440 y mobile 390).
+
+| Commit | Qué resuelve | Ítems |
+|---|---|---|
+| `8adc4ca` | Typecheck real en `pnpm check`; error TS en `HeroLandscape` | B3 |
+| `8d5cb54` | 14 clases de opacidad que no se generaban (El Registro invisible, pista de barras, etc.) | B1 |
+| `1770439` | Respuestas del diagnóstico consistentes, `/resultado` protegido, progreso en sessionStorage (nunca el email) | B4, B5 |
+| `a18ca91` | Popup, nav y footer → `/descubri-tu-piel`; `/discover` redirige; `DiscoverYourRhythmSection` desmontado | B2, C1 |
+| `d5bbacf` | Home en el orden del Handoff §9 (Inside/Outside y Ritual desmontados, **no borrados**); copy sin atadura a la fase; voseo | C1, C2, C9 |
+| `52c9378` | Lecturas, Instagram, cierre “Unite al ritual” y footer completo; anclas internas que funcionan | Fase 3 |
+| `c94e0fd` | Resultado sin valores de demo; El Registro responde con honestidad; comentario de mobile | C4, C7, C8 |
+| `b882ded` | Imágenes ~7,0 MB → ~1,3 MB (PNG conservados); rutas lazy; vendors en chunks | T1, T2 |
+| `9f5dce6` | 5 duraciones de motion que no se generaban (corrían a 150 ms) | nuevo |
+| `5dbe4c7` | axe-core: 0 fallas en 9 páginas (desktop y mobile); El Ciclo usable con reduced motion | QA a11y |
+| `4bed1c1` | `og:image` mostraba la imagen de la plataforma Enter; meta description; títulos por ruta | SEO |
+| `c51b532` | Tienda/PDP: producto y precio primero, fase como referencia | §6 |
+
+### Decisiones que tomé por defecto (todas reversibles; revisar con el equipo)
+1. `/discover` → redirect a `/descubri-tu-piel`. `pages/Discover.tsx` sigue en el repo.
+2. Nav mobile “Descubrir tu ritual” → “Descubrí tu piel” (`/descubri-tu-piel`).
+3. Popup: eyebrow “Fenotipo de piel”, cuerpo = bajada aprobada de la entrada en Home. El “5% off” se mantiene tal cual estaba (ver pendientes).
+4. `InsideOutsideSection` y `RitualSection` desmontadas de Home hasta sus sprints (05/06).
+5. Copy centrado en la fase reemplazado por la bajada aprobada “Fórmulas pensadas para acompañar lo que tu piel necesita.”
+6. El Registro, al enviar: “El Registro todavía no está abierto. Muy pronto vas a poder sumarte.”
+7. Cierre: “Unite al ritual.” + frase de marca + dos salidas (diagnóstico, El Registro).
+8. Imágenes: JPEG q92 para fotografía (Hero, Pack), WebP para productos con transparencia. Mismas dimensiones.
+
+### Hallazgos nuevos durante la ejecución
+- **Duraciones de motion**: `duration-[650ms]` y similares eran ambiguas con `tailwindcss-animate` y no se generaban. El crossfade del Pack, el fundido del panel del diagnóstico, el relevo entre preguntas y el smart header corrían a 150 ms. Ya está corregido; conviene revisar la sensación en el browser.
+- **Lenis tras cambiar de ruta** conservaba el alto de la página anterior y recortaba el scroll a anclas. Afectaba también al CTA del Hero al volver a Home. Ya está corregido.
+- **El Ciclo con reduced motion (desktop)**: dejaba ~1,8 pantallas vacías y solo la fase 1. Ya está corregido; el modo animado no cambió.
+- **`og:image`** era la imagen genérica de la plataforma Enter. Ya está corregido. Sigue siendo una URL relativa: cuando exista dominio, pasarla a absoluta.
+
+### Sigue pendiente (necesita contenido, credenciales o decisión)
+- **07B** (fenotipos, scoring, recomendaciones): bloqueado por los 10 puntos del Handoff §23.
+- **Shopify**: dominio de la tienda, token Storefront y productos cargados. Precios hoy en `data/products.ts`.
+- **Newsletter / email del diagnóstico**: proveedor. Los puntos de integración son `RhythmSection.onSubmit` y `EmailCapture.onDone`.
+- **5% OFF del popup**: hoy no hay mecanismo para aplicarlo. Decidir si se muestra antes de Shopify.
+- **Instagram**: cuenta (`instagramCopy.handle/profileUrl`) y, para un feed dinámico, un endpoint propio (`lib/instagram.ts`).
+- **Lecturas**: piezas reales (`learnCopy.readings[].href/media`).
+- **Footer**: páginas de ayuda y legales (`href: null` hoy). **A validar con asesoría legal**: en Argentina, los sitios de comercio electrónico deben exhibir el “Botón de arrepentimiento” (Res. SCI 424/2020). No se agregó nada sin esa validación.
+- **Claims y activos** (C5, C6): sin cambios hasta que el equipo los valide.
+- **Plataforma Enter** (T4): plugin que inyecta fuentes Poppins/Roboto, SDK de analytics y registry privado. Decidir si se mantiene.
+- **Deploy SPA**: el host debe reescribir todas las rutas a `index.html` (si no, recargar `/descubri-tu-piel` da 404).
+- **Cleanup final** (T5): i18n, toasts, react-query y supabase parecen sin uso. Pesan en el chunk principal (562 kB).
+- **Producción fotográfica**: todos los placeholders se reemplazan desde `data/`, sin tocar layouts.
+
+---
+
 ## 1. Resumen ejecutivo
 
 - El núcleo aprobado (Hero, El Ciclo, Pack x4, Los esenciales, Agua + El Registro, entrada Descubrí tu piel, diagnóstico 07A) **está implementado, compila y corre sin errores JS**.
