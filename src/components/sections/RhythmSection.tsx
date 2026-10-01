@@ -1,23 +1,148 @@
-import { useEffect, useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type RefObject,
+} from "react";
 import { gsap } from "@/lib/gsap";
-import { rhythmCopy } from "@/data/content";
+import { registerCopy, rhythmCopy } from "@/data/content";
+
+/** Campo claro que precede y sigue a la escena. */
+const FIELD = "#F2EBDD";
 
 /**
- * El Ritmo — Sprint 03.8
+ * Alto de la sección, en vh. El stage se pinea 100vh, así que el recorrido de
+ * la transformación es SECTION_VH − 100. 100vh alcanzan para que el relevo del
+ * copy se sienta viscoso en vez de conmutado.
+ */
+const SECTION_VH = 200;
+
+/**
+ * Sombras localizadas bajo el texto.
  *
- * The water is now a living cinematic background, independent from scroll.
- * Scroll only orchestrates copy and the entrance/exit of the section.
+ * Son estrictamente laterales: se apagan antes del 82-86% de su lado y no
+ * tocan los bordes superior ni inferior, así el video llega limpio al corte
+ * con el campo claro. No hay ningún fade vertical en esta escena.
+ *
+ * Las densidades están resueltas contra el peor caso —ivory sobre una cresta
+ * de espuma clara— para sostener 4.5:1.
+ */
+const SHADE_LEFT = `linear-gradient(90deg,
+  rgba(34,26,20,0.74) 0%,
+  rgba(34,26,20,0.68) 26%,
+  rgba(34,26,20,0.56) 44%,
+  rgba(34,26,20,0.24) 64%,
+  rgba(34,26,20,0) 82%)`;
+
+const SHADE_RIGHT = `linear-gradient(270deg,
+  rgba(34,26,20,0.74) 0%,
+  rgba(34,26,20,0.72) 24%,
+  rgba(34,26,20,0.68) 42%,
+  rgba(34,26,20,0.34) 64%,
+  rgba(34,26,20,0) 86%)`;
+
+/** Velo uniforme para la versión angosta. Sin degradado: sin bordes lavados. */
+const SHADE_COMPACT = "rgba(34,26,20,0.60)";
+
+const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const smoothstep = (edge0: number, edge1: number, x: number) => {
+  const f = clamp01((x - edge0) / (edge1 - edge0));
+  return f * f * (3 - 2 * f);
+};
+
+/**
+ * Ventana del relevo entre los dos momentos, en fracción del recorrido.
+ *
+ * Abarca casi la mitad del scroll de la escena a propósito: el cambio tiene
+ * que repartirse lo suficiente como para que no exista un punto donde se
+ * perciba que "cambió el texto".
+ */
+const CROSS_IN = 0.26;
+const CROSS_OUT = 0.7;
+
+/** Recorrido vertical de cada momento durante el relevo, en px. */
+const RISE = 58;
+const ENTER = 52;
+
+/**
+ * HOME 05 — Agua / El Ritmo + El Registro.
+ *
+ * Pausa sensorial después de la zona comercial. Una sola escena: el agua de
+ * fondo, una idea que se transforma a la izquierda y El Registro fijo a la
+ * derecha, que actúa de ancla mientras el resto cambia.
+ *
+ * LA ESCENA LLEGA ARMADA
+ * No hay animación de entrada. En el primer frame ya están el agua, el primer
+ * mensaje y El Registro completos, y los valores iniciales del JSX coinciden
+ * con lo que escribe `render(0)`, así que nada aparece después de entrar.
+ *
+ * SIN FADES DE BORDE
+ * El video llega limpio al borde superior e inferior de la sección: corte
+ * directo entre el campo ivory y el agua. Las únicas sombras son laterales y
+ * existen solo para sostener la lectura del texto.
+ *
+ * EL VIDEO NO DEPENDE DEL SCROLL
+ * El agua vive de `autoPlay`, `loop` y un `playbackRate` fijo, más un drift
+ * GSAP infinito que solo altera su transform. Nada lee ni escribe
+ * `currentTime` y ningún ScrollTrigger la controla: se mueve siempre.
+ *
+ * El scroll gobierna una única cosa —el peso relativo de los dos mensajes de
+ * la izquierda— desde un solo escalar y con funciones complementarias que
+ * suman 1, de modo que no hay hueco ni salto en ninguna posición intermedia.
+ *
+ * El tono del header lo declara el propio stage: es la superficie de 100vh que
+ * está realmente bajo la navegación, así que su geometría es exacta también
+ * mientras está pinneado.
+ *
+ * Preparado para conectar un proveedor de newsletter: el formulario es un
+ * estado controlado con `preventDefault` y sin envío. No simula éxito.
  */
 export function RhythmSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const landscapeRef = useRef<HTMLDivElement>(null);
-  const filmRef = useRef<HTMLDivElement>(null);
-  const exitRef = useRef<HTMLDivElement>(null);
-  const statementRefs = useRef<Array<HTMLParagraphElement | null>>([]);
-  const labelRef = useRef<HTMLParagraphElement>(null);
-  const hintRef = useRef<HTMLParagraphElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const momentRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  const [email, setEmail] = useState("");
+
+  /*
+   * El agua: autónoma y sin relación con el scroll.
+   *
+   * Hay dos elementos de video —uno por breakpoint— y cada uno tiene su propio
+   * ref: compartirlo haría que el segundo montaje sobrescribiera al primero y
+   * el video pinneado quedara sin `playbackRate` ni deriva.
+   */
+  useEffect(() => {
+    const videos = [videoRef.current, mobileVideoRef.current].filter(
+      (el): el is HTMLVideoElement => el !== null
+    );
+    const cleanups: Array<() => void> = [];
+
+    videos.forEach((video) => {
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = true;
+      video.playbackRate = 0.32;
+
+      const start = () => {
+        video.play().catch(() => {
+          // Si el navegador bloquea el autoplay muteado, queda el primer frame.
+        });
+      };
+
+      if (video.readyState >= 2) start();
+      else video.addEventListener("canplay", start, { once: true });
+
+      cleanups.push(() => {
+        video.removeEventListener("canplay", start);
+        video.pause();
+      });
+    });
+
+    return () => cleanups.forEach((fn) => fn());
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -25,210 +150,240 @@ export function RhythmSection() {
     const video = videoRef.current;
     if (!section || !stage || !video) return;
 
-    const statements = statementRefs.current.filter(
-      (el): el is HTMLParagraphElement => el !== null
+    const moments = momentRefs.current.filter(
+      (el): el is HTMLDivElement => el !== null
     );
-
-    video.muted = true;
-    video.playsInline = true;
-    video.loop = true;
-    video.playbackRate = 0.32;
-
-    const startVideo = () => {
-      video.play().catch(() => {
-        // Muted autoplay is supported by modern browsers; if a browser still
-        // blocks it, the static first frame remains as a graceful fallback.
-      });
-    };
-
-    if (video.readyState >= 2) startVideo();
-    else video.addEventListener("canplay", startVideo, { once: true });
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      mm.add(
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          gsap.set(filmRef.current, { opacity: 0 });
-          gsap.set(exitRef.current, { opacity: 0 });
-          gsap.set(statements, { autoAlpha: 0, y: 28 });
-          gsap.set(statements[0], { autoAlpha: 1, y: 0 });
-          gsap.set(video, {
-            scale: 1.08,
-            xPercent: 0,
-            yPercent: 0,
-            filter: "brightness(0.58) saturate(0.74) sepia(0.18)",
-          });
+      mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+        /*
+         * Deriva óptica del agua. Vive fuera de ScrollTrigger a propósito: es
+         * lo que mantiene la escena viva cuando el usuario se queda quieto.
+         */
+        const drift = gsap.timeline({ repeat: -1, yoyo: true });
+        drift.to(video, {
+          scale: 1.1,
+          xPercent: 1.4,
+          yPercent: -0.9,
+          duration: 11,
+          ease: "sine.inOut",
+        });
 
-          // Very slow autonomous drift: the water stays alive even if the
-          // user stops scrolling. It is deliberately not tied to ScrollTrigger.
-          const drift = gsap.timeline({ repeat: -1, yoyo: true });
-          drift.to(video, {
-            scale: 1.13,
-            xPercent: 1.25,
-            yPercent: -0.8,
-            duration: 9,
-            ease: "sine.inOut",
-          });
+        /**
+         * Único punto de escritura de la escena.
+         *
+         * `t` es el peso del segundo momento. Las opacidades son exactamente
+         * complementarias, así que en cualquier posición intermedia la suma es
+         * 1 y la composición nunca queda vacía; el desplazamiento vertical
+         * opuesto es lo que separa ambos mensajes mientras conviven.
+         */
+        const render = (p: number) => {
+          const t = smoothstep(CROSS_IN, CROSS_OUT, p);
 
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: "bottom bottom",
-              pin: stage,
-              scrub: 0.75,
-              anticipatePin: 1,
-            },
-          });
+          gsap.set(moments[0], { autoAlpha: 1 - t, y: -RISE * t });
+          gsap.set(moments[1], { autoAlpha: t, y: ENTER * (1 - t) });
+        };
 
-          // Keep the transition photographic and gradual. Scroll reveals the
-          // water, but never controls the video's own motion.
-          tl.to(landscapeRef.current, { opacity: 0, duration: 0.21, ease: "none" }, 0);
-          tl.to(filmRef.current, { opacity: 1, duration: 0.22, ease: "none" }, 0.015);
+        render(0);
 
-          tl.to(statements[0], { autoAlpha: 0, y: -18, duration: 0.075 }, 0.29);
-          tl.fromTo(
-            statements[1],
-            { autoAlpha: 0, y: 24 },
-            { autoAlpha: 1, y: 0, duration: 0.1, ease: "power2.out" },
-            0.33
-          );
-          tl.to(statements[1], { autoAlpha: 0, y: -18, duration: 0.075 }, 0.5);
-          tl.fromTo(
-            statements[2],
-            { autoAlpha: 0, y: 24 },
-            { autoAlpha: 1, y: 0, duration: 0.11, ease: "power2.out" },
-            0.545
-          );
+        const driver = { progress: 0 };
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom bottom",
+            pin: stage,
+            scrub: 1,
+            anticipatePin: 1,
+          },
+        });
+        tl.to(driver, {
+          progress: 1,
+          duration: 1,
+          ease: "none",
+          onUpdate: () => render(driver.progress),
+        });
 
-          // A warm mineral veil appears only at the very end, creating a soft
-          // handoff into El Ciclo instead of a hard cut.
-          tl.to(exitRef.current, { opacity: 0.82, duration: 0.25, ease: "none" }, 0.75);
-          tl.to(statements[2], { autoAlpha: 0, y: -12, duration: 0.1 }, 0.89);
-          tl.to([labelRef.current, hintRef.current], { autoAlpha: 0, duration: 0.08 }, 0.92);
+        return () => drift.kill();
+      });
 
-          return () => drift.kill();
-        }
-      );
-
-      mm.add("(prefers-reduced-motion: reduce)", () => {
-        video.pause();
-        gsap.set(filmRef.current, { opacity: 1 });
-        gsap.set(exitRef.current, { opacity: 0.3 });
+      // Reduced motion: escena estable, sin deriva ni coreografía de scroll.
+      mm.add("(min-width: 768px) and (prefers-reduced-motion: reduce)", () => {
+        gsap.set(moments[0], { autoAlpha: 1, y: 0 });
+        gsap.set(moments[1], { autoAlpha: 0, y: 0 });
       });
 
       return () => mm.revert();
     }, section);
 
-    return () => {
-      video.removeEventListener("canplay", startVideo);
-      video.pause();
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
+
+  const onSubmit = (event: FormEvent) => {
+    // Todavía no hay proveedor de newsletter conectado: no se envía nada y no
+    // se simula ningún resultado. Al conectarlo, este es el único punto a tocar.
+    event.preventDefault();
+  };
+
+  const water = (ref: RefObject<HTMLVideoElement>) => (
+    <video
+      ref={ref}
+      src="/ritual-water.mp4"
+      preload="auto"
+      autoPlay
+      loop
+      muted
+      playsInline
+      aria-hidden="true"
+      tabIndex={-1}
+      className="absolute inset-0 h-full w-full object-cover [filter:brightness(0.94)_contrast(1.06)_saturate(0.8)] [will-change:transform]"
+    />
+  );
+
+  /**
+   * Superficie de El Registro: se percibe por estructura, no por relleno.
+   * Ivory con alfa muy baja y un borde de 1px, sin blur, para que el agua se
+   * siga viendo por detrás.
+   */
+  const panelClass = "rounded-[20px] border border-ivory/[0.18] bg-ivory/[0.06]";
+
+  const register = (
+    <>
+      <h3 className="font-display text-[clamp(2.2rem,3.2vw,3.5rem)] leading-[1] tracking-[-0.035em] text-ivory [text-shadow:0_2px_32px_rgba(16,12,8,0.45)]">
+        {registerCopy.title}
+      </h3>
+      <p className="mt-5 max-w-[330px] font-sans text-[14px] leading-relaxed text-ivory/82 [text-shadow:0_1px_16px_rgba(16,12,8,0.5)]">
+        {registerCopy.body}
+      </p>
+      <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-3">
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder={registerCopy.placeholder}
+          aria-label={registerCopy.placeholder}
+          className="h-[56px] w-full rounded-[11px] border border-ivory/30 bg-ivory/[0.08] px-5 font-sans text-[14px] text-ivory outline-none transition-colors duration-300 placeholder:text-ivory/60 focus:border-ivory/65"
+        />
+        <button
+          type="submit"
+          className="h-[56px] w-full rounded-[11px] bg-ink font-sans text-[12px] uppercase tracking-[0.2em] text-ivory transition-colors duration-300 ease-out hover:bg-deepBrown"
+        >
+          {registerCopy.cta}
+        </button>
+      </form>
+    </>
+  );
 
   return (
     <section
       id="ritmo"
       ref={sectionRef}
-      className="relative bg-[#6a4a35] md:h-[330vh]"
       aria-labelledby="rhythm-heading"
+      className="relative md:h-[200vh]"
+      style={{ backgroundColor: FIELD }}
     >
-      <div ref={stageRef} className="relative hidden h-screen overflow-hidden bg-[#171713] md:block">
-        <div
-          ref={landscapeRef}
-          className="absolute inset-0 bg-[url('/pradera-y-caballo.png')] bg-cover bg-[position:68%_38%]"
-          aria-hidden="true"
-        >
-          <div className="absolute inset-0 bg-[#191511]/75 backdrop-blur-[8px]" />
-        </div>
+      {/*
+        Desktop: una sola escena pinneada.
+        El tono del header se declara acá y no en un wrapper: éste es el plano
+        de 100vh que está realmente bajo la navegación, y al estar pinneado
+        reporta coordenadas de viewport exactas.
+      */}
+      <div
+        ref={stageRef}
+        data-header-tone="light"
+        className="relative hidden h-screen w-full overflow-hidden md:block"
+        style={{ backgroundColor: "#6E736D" }}
+      >
+        {water(videoRef)}
 
-        <div ref={filmRef} className="absolute inset-0 opacity-0" aria-hidden="true">
-          <video
-            ref={videoRef}
-            src="/ritual-water.mp4"
-            preload="auto"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 h-full w-full object-cover [will-change:transform,filter]"
-          />
-          <div className="absolute inset-0 bg-[#171713]/20" />
-          <div className="absolute inset-0 shadow-[inset_0_0_180px_rgba(19,15,12,0.72)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(23,19,16,0.80)_0%,rgba(23,19,16,0.48)_36%,rgba(23,19,16,0.08)_72%)]" />
-        </div>
-
+        {/* Sombras laterales. Nunca tocan los bordes superior ni inferior. */}
         <div
-          ref={exitRef}
-          className="pointer-events-none absolute inset-0 bg-[#6a4a35] opacity-0 mix-blend-multiply"
           aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ backgroundImage: SHADE_LEFT }}
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_48%,transparent_0%,transparent_25%,rgba(25,21,17,0.22)_72%,rgba(25,21,17,0.42)_100%)]"
           aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ backgroundImage: SHADE_RIGHT }}
         />
 
-        <p
-          ref={labelRef}
-          className="absolute left-[5vw] top-[7vh] z-30 font-sans text-[10px] uppercase tracking-[0.26em] text-[#f2ebdd]/58"
-        >
-          {rhythmCopy.eyebrow}
-        </p>
-
-        <div className="absolute inset-0 z-20 flex items-center">
-          <div className="relative ml-[5vw] h-[42vh] w-[46vw] max-w-[760px]">
-            {rhythmCopy.statements.map((statement, index) => (
-              <p
-                key={statement}
-                id={index === 0 ? "rhythm-heading" : undefined}
+        {/* Izquierda: la idea que se transforma. */}
+        <div className="absolute inset-y-0 left-[6vw] z-10 flex w-[42vw] max-w-[620px] items-center">
+          <div className="relative w-full">
+            {rhythmCopy.moments.map((moment, index) => (
+              <div
+                key={moment.lines.join("")}
                 ref={(el) => {
-                  statementRefs.current[index] = el;
+                  momentRefs.current[index] = el;
                 }}
-                className="absolute left-0 top-1/2 w-full -translate-y-1/2 font-display text-[clamp(3.2rem,5.75vw,6.9rem)] leading-[0.96] tracking-[-0.038em] text-[#f2ebdd] [text-shadow:0_2px_30px_rgba(0,0,0,0.28)]"
-                style={{ opacity: index === 0 ? 1 : 0 }}
+                className="absolute inset-x-0 top-1/2 -translate-y-1/2"
+                style={{
+                  opacity: index === 0 ? 1 : 0,
+                  transform: index === 0 ? undefined : `translateY(${ENTER}px)`,
+                }}
               >
-                {statement}
-              </p>
+                <h2
+                  id={index === 0 ? "rhythm-heading" : undefined}
+                  className="font-display text-[clamp(2.6rem,4.6vw,5rem)] leading-[1] tracking-[-0.04em] text-ivory [text-shadow:0_2px_40px_rgba(16,12,8,0.42)]"
+                >
+                  {moment.lines[0]}
+                  <br />
+                  {moment.lines[1]}
+                </h2>
+                {moment.note && (
+                  <p className="mt-7 max-w-[360px] font-sans text-[14px] leading-relaxed text-ivory/80 [text-shadow:0_1px_16px_rgba(16,12,8,0.5)]">
+                    {moment.note}
+                  </p>
+                )}
+              </div>
             ))}
           </div>
         </div>
 
-        <p
-          ref={hintRef}
-          className="absolute bottom-[5vh] left-[5vw] z-30 font-sans text-[9px] uppercase tracking-[0.22em] text-[#f2ebdd]/38"
-        >
-          El ritmo se revela al avanzar
-        </p>
+        {/* Derecha: El Registro, presente de principio a fin. */}
+        <div className="absolute inset-y-0 right-[5vw] z-10 flex w-[36vw] max-w-[540px] flex-col justify-center">
+          <div className={`${panelClass} px-9 py-11`}>{register}</div>
+        </div>
       </div>
 
-      <div className="relative min-h-[100svh] overflow-hidden bg-[#191511] md:hidden">
-        <video
-          src="/ritual-water.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+      {/* Mobile: misma escena, sin coreografía y sin fades de borde. */}
+      <div
+        className="relative overflow-hidden md:hidden"
+        data-header-tone="light"
+        style={{ backgroundColor: "#6E736D" }}
+      >
+        {water(mobileVideoRef)}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{ backgroundColor: SHADE_COMPACT }}
         />
-        <div className="absolute inset-0 bg-[#191511]/45" />
-        <div className="relative z-10 flex min-h-[100svh] flex-col justify-end px-6 pb-16 pt-28 text-[#f2ebdd]">
-          <p className="mb-10 font-sans text-[10px] uppercase tracking-[0.24em] text-[#f2ebdd]/55">
-            {rhythmCopy.eyebrow}
-          </p>
-          <div className="space-y-10">
-            {rhythmCopy.statements.map((statement, index) => (
-              <p
-                key={statement}
-                id={index === 0 ? "rhythm-heading" : undefined}
-                className="font-display text-[clamp(2.8rem,12vw,5rem)] leading-[0.96] tracking-[-0.035em]"
-              >
-                {statement}
+
+        <div className="relative z-10 flex flex-col gap-12 px-6 pb-20 pt-20">
+          <div>
+            <h2 className="font-display text-[clamp(2.2rem,9vw,3rem)] leading-[1.02] tracking-[-0.035em] text-ivory">
+              {rhythmCopy.moments[0].lines[0]}
+              <br />
+              {rhythmCopy.moments[0].lines[1]}
+            </h2>
+            {rhythmCopy.moments[0].note && (
+              <p className="mt-6 font-sans text-[14px] leading-relaxed text-ivory/80">
+                {rhythmCopy.moments[0].note}
               </p>
-            ))}
+            )}
           </div>
+
+          <p className="font-display text-[clamp(1.7rem,6.8vw,2.2rem)] leading-[1.1] tracking-[-0.03em] text-ivory/75">
+            {rhythmCopy.moments[1].lines[0]}
+            <br />
+            {rhythmCopy.moments[1].lines[1]}
+          </p>
+
+          <div className={`${panelClass} px-6 py-9`}>{register}</div>
         </div>
       </div>
     </section>

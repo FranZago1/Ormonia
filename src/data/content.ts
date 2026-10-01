@@ -9,12 +9,35 @@ export const brandCopy = {
   shortPitch: "Serums rituales formulados para cada fase del ciclo.",
 };
 
+/**
+ * Barra superior del header. Umbral aprobado: ARS 145.000.
+ */
+export const announcementCopy = {
+  message: "Envío gratis en órdenes mayores a $145.000",
+};
+
 export const nav = {
-  primary: [
-    { label: "Productos", href: "/products" },
-    { label: "Aprender", href: "/learn" },
-    { label: "Descubrir tu ritual", href: "/discover" },
+  /** Zona izquierda del header (desktop). Jerarquía aprobada en el Master Plan. */
+  left: [
+    { label: "Tienda", href: "/products" },
     { label: "Sobre Ormonia", href: "/about" },
+    { label: "Explorar", href: "/learn" },
+  ],
+  /**
+   * Zona derecha del header. Todavía no existe cuenta, buscador ni carrito:
+   * se muestran como afordancias inertes hasta que Shopify esté integrado.
+   * No inventar rutas ni comportamiento de compra antes de ese sprint.
+   */
+  utilities: [
+    { label: "Cuenta", href: null as string | null },
+    { label: "Buscar", href: null as string | null },
+    { label: "Carrito", href: null as string | null },
+  ],
+  primary: [
+    { label: "Tienda", href: "/products" },
+    { label: "Sobre Ormonia", href: "/about" },
+    { label: "Explorar", href: "/learn" },
+    { label: "Descubrir tu ritual", href: "/discover" },
     // Placeholder: futuro punto de entrada al carrito/ritual (se conectará en un sprint posterior).
     { label: "Tu ritual", href: null as string | null },
   ],
@@ -24,6 +47,24 @@ export const heroCopy = {
   line1: "Lo que cambia adentro",
   line2: "se expresa afuera.",
   cta: "Descubrir el ritual",
+  /** Ancla interna del bloque Pack x4. Mientras no exista PDP/Shopify. */
+  ctaTarget: "#pack-x4",
+};
+
+/**
+ * Popup diferido de descubrimiento (Sprint 01).
+ * No implementa el quiz: solo la invitación. La lógica de fenotipos se define
+ * en Sprint 07, cuando la CEO cierre el modelo.
+ */
+export const discoverPopupCopy = {
+  eyebrow: "Descubrimiento",
+  title: "Descubrí tu piel",
+  body: "Tu fenotipo describe cómo responde tu piel a lo largo del ciclo. Reconocerlo es el primer gesto para construir un ritual más propio.",
+  incentive: "5% off en tu primer ritual",
+  cta: "Descubrir mi piel",
+  ctaHref: "/discover",
+  dismiss: "Ahora no",
+  close: "Cerrar",
 };
 
 /**
@@ -36,12 +77,29 @@ export const heroMedia = {
   alt: "Pradera abierta bajo luz cálida con un caballo pastando; tonos verdes y tierra.",
 };
 
+/**
+ * HOME 05 — Agua / El Ritmo.
+ *
+ * Dos momentos de texto, no más: la escena es una pausa sensorial, no un
+ * bloque explicativo. El agua sostiene el aire; el copy solo lo puntúa.
+ */
+/**
+ * HOME 05 — Agua / El Ritmo.
+ *
+ * Dos momentos, sin eyebrow: la escena es una pausa sensorial y cuantos menos
+ * elementos tenga, mejor respira. El relevo entre ambos es continuo, no un
+ * cambio de estado.
+ */
 export const rhythmCopy = {
-  eyebrow: "El ritmo",
-  statements: [
-    "Tu piel no es igual todos los días.",
-    "Tu cuerpo tampoco.",
-    "Entonces, ¿por qué tu skincare debería serlo?",
+  moments: [
+    {
+      lines: ["La piel también", "tiene un ritmo."],
+      note: "Cambia, responde, se transforma." as string | null,
+    },
+    {
+      lines: ["Aprender a mirarla", "cambia la forma de cuidarla."],
+      note: null as string | null,
+    },
   ],
 };
 
@@ -57,10 +115,64 @@ export const cycleCopy = {
   ],
 };
 
+/**
+ * HOME 04 — Productos individuales.
+ *
+ * El mensaje baja el énfasis en la vida cíclica: los serums se compran por lo
+ * que la piel necesita, no por estar en una fase determinada. La fase sigue
+ * informando cada producto, pero como dato secundario, no como condición.
+ *
+ * Sin eyebrow: "Los serums" repetía la idea del titular y sumaba ruido.
+ */
 export const fourPhasesCopy = {
-  eyebrow: "Los serums",
-  title: "Un serum para cada fase.",
-  body: "Fórmulas pensadas para el estado real de tu piel en cada momento del ciclo.",
+  title: "Los esenciales de ORMONIA.",
+  body: "Fórmulas pensadas para acompañar lo que tu piel necesita.",
+};
+
+/**
+ * HOME 03 — Pack x4 / Ritual completo.
+ *
+ * Momento comercial central: comprar los cuatro serums juntos es la forma de
+ * vivir el ciclo completo. `price` y `savings` quedan preparados para cuando
+ * existan precios definitivos y se pueda comunicar la ventaja frente a
+ * comprarlos por separado; mientras son `null`, esos bloques no se renderizan.
+ *
+ * `ctaHref` resuelve provisionalmente en la ruta de productos existente. Cuando
+ * exista el PDP del pack en Shopify, se cambia solo esta línea.
+ *
+ * El bloque no vuelve a nombrar los cuatro serums: el usuario acaba de verlos
+ * en El Ciclo. Acá el mensaje es el ritual completo, no cada fórmula.
+ */
+export const packCopy = {
+  eyebrow: "Pack x4 · Ritual completo",
+  titleLines: ["Las 4 fases,", "un solo ritual."],
+  /**
+   * Provisional. Cuando el pricing definitivo confirme el número, esta línea
+   * pasa a comunicar el ahorro concreto ("Ahorrá X% con el ritual completo").
+   * No inventar el porcentaje antes de esa confirmación.
+   */
+  body: "Una forma simple de recorrer el ritual completo y ahorrar eligiendo el set.",
+  cta: "Descubrir el ritual completo",
+  ctaHref: "/products",
+  price: null as string | null,
+  savings: null as string | null,
+  media: {
+    /**
+     * Assets provisionales del estuche del Pack x4 (1200×896).
+     *
+     * `pack-box-dark.png` —la caja negra vista desde arriba— queda disponible
+     * como tercera imagen futura. No hay galería todavía.
+     */
+    primary: {
+      src: "/products/pack-box-open.png",
+      alt: "Estuche abierto del Pack x4 de Ormonia con los serums en su interior.",
+    },
+    /** En `null` la pieza usa una sola imagen estable, sin crossfade. */
+    hover: {
+      src: "/products/pack-box-hand.png",
+      alt: "",
+    } as { src: string; alt: string } | null,
+  },
 };
 
 export const insideOutsideCopy = {
@@ -105,13 +217,22 @@ export const learnCopy = {
   ],
 };
 
+/**
+ * El Registro — newsletter. Vive dentro de la escena de agua (HOME 05).
+ *
+ * Copy deliberadamente corto: la interfaz necesita respirar. Sin cadencias,
+ * frecuencias ni promesas editoriales de más.
+ *
+ * `disclaimer` se conserva para `RegisterSection`, el bloque autónomo que
+ * queda disponible en el repo; la escena de agua no lo renderiza.
+ */
 export const registerCopy = {
-  eyebrow: "El registro",
-  title: "Únete al registro.",
-  body: "Primeras fórmulas, notas editoriales y el lanzamiento de AURA. Sin ruido, solo lo esencial.",
-  placeholder: "Tu correo",
-  cta: "Registrarme",
-  disclaimer: "Al registrarte aceptas recibir comunicaciones de ORMONIA.",
+  eyebrow: "El Registro",
+  title: "El Registro",
+  body: "Ideas, fórmulas y rituales para entender mejor tu piel y elegir cómo cuidarla.",
+  placeholder: "Tu email",
+  cta: "Recibir El Registro",
+  disclaimer: "Al registrarte aceptás recibir comunicaciones de ORMONIA.",
 };
 
 export const instagramCopy = {
