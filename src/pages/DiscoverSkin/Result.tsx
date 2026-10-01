@@ -74,15 +74,21 @@ const DiscoverSkinResult = () => {
                   <span className="font-sans text-[13px] uppercase tracking-[0.14em] text-ink">
                     {axis.label}
                   </span>
-                  <span className="font-sans text-[11px] text-ink/50">
-                    {Math.round(axis.value * 100)}
-                  </span>
+                  {/* Valores de demo: no se muestran como si fueran una
+                      medición mientras la lectura sea provisional. */}
+                  {!reading.provisional && (
+                    <span className="font-sans text-[11px] text-ink/50">
+                      {Math.round(axis.value * 100)}
+                    </span>
+                  )}
                 </div>
                 <div className="mt-3 h-px w-full bg-ink/12">
-                  <div
-                    className="h-full bg-ink/70"
-                    style={{ width: `${axis.value * 100}%` }}
-                  />
+                  {!reading.provisional && (
+                    <div
+                      className="h-full bg-ink/70"
+                      style={{ width: `${axis.value * 100}%` }}
+                    />
+                  )}
                 </div>
                 <p className="mt-3 font-sans text-[12px] leading-relaxed text-ink/58">
                   {axis.note}

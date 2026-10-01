@@ -21,7 +21,9 @@ interface DiscoverShellProps {
  *
  * Split persistente en desktop: el panel visual no se desmonta al cambiar de
  * pregunta, así el fundido entre bloques es continuo. En pantallas angostas
- * queda una sola columna y el visual pasa a ser una franja de contexto.
+ * queda una sola columna, sin el panel visual: hasta que exista la fotografía
+ * de producción, una franja tonal en mobile no suma contexto y empuja la
+ * pregunta hacia abajo.
  */
 export function DiscoverShell({
   visualGroup,

@@ -337,6 +337,11 @@ export const registerCopy = {
   placeholder: "Tu email",
   cta: "Recibir El Registro",
   disclaimer: "Al registrarte aceptás recibir comunicaciones de ORMONIA.",
+  /**
+   * Respuesta honesta al enviar mientras no haya proveedor conectado: no
+   * confirma una suscripción que no ocurrió. Se elimina al conectar el envío.
+   */
+  pendingNotice: "El Registro todavía no está abierto. Muy pronto vas a poder sumarte.",
 };
 
 /**
