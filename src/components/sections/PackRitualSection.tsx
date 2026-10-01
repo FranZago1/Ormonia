@@ -121,7 +121,7 @@ export function PackRitualSection() {
             className={cn(
               "absolute inset-0 h-full w-full object-cover object-center",
               hasHoverImage &&
-                "motion-safe:transition-opacity motion-safe:duration-[650ms] motion-safe:ease-out motion-safe:group-hover:opacity-0"
+                "motion-safe:transition-opacity motion-safe:duration-650 motion-safe:ease-out motion-safe:group-hover:opacity-0"
             )}
           />
           {hasHoverImage && (
@@ -130,7 +130,7 @@ export function PackRitualSection() {
               alt=""
               aria-hidden="true"
               loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover object-center opacity-0 motion-safe:transition-opacity motion-safe:duration-[650ms] motion-safe:ease-out motion-safe:group-hover:opacity-100"
+              className="absolute inset-0 h-full w-full object-cover object-center opacity-0 motion-safe:transition-opacity motion-safe:duration-650 motion-safe:ease-out motion-safe:group-hover:opacity-100"
             />
           )}
         </div>

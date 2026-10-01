@@ -129,7 +129,7 @@ function ReadingMedia({
           src={reading.media.src}
           alt={reading.media.alt}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
+          className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-900 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
         />
       ) : (
         <>

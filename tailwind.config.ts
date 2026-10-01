@@ -104,6 +104,19 @@ export default {
 				72: "0.72",
 				82: "0.82",
 			},
+			/*
+			 * Duraciones propias del motion ORMONIA. Como valor arbitrario
+			 * (`duration-[650ms]`) eran ambiguas con `tailwindcss-animate`, que
+			 * también define `duration-*`, y Tailwind no las generaba: las
+			 * transiciones corrían con el default de 150ms.
+			 */
+			transitionDuration: {
+				380: "380ms",
+				420: "420ms",
+				520: "520ms",
+				650: "650ms",
+				900: "900ms",
+			},
 			letterSpacing: {
 				editorial: "0.14em",
 				wide: "0.08em",

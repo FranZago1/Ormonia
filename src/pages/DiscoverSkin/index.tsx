@@ -78,7 +78,7 @@ const DiscoverSkin = () => {
         <div
           key={quiz.question?.id ?? "email"}
           className={cn(
-            "flex-1 motion-safe:transition-[opacity,transform] motion-safe:duration-[380ms] motion-safe:ease-out",
+            "flex-1 motion-safe:transition-[opacity,transform] motion-safe:duration-380 motion-safe:ease-out",
             leaving
               ? "opacity-0 motion-safe:-translate-y-3"
               : "opacity-100 motion-safe:translate-y-0"
