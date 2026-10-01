@@ -106,6 +106,7 @@ export function RhythmSection() {
   const momentRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   /*
    * El agua: autónoma y sin relación con el scroll.
@@ -224,7 +225,9 @@ export function RhythmSection() {
   const onSubmit = (event: FormEvent) => {
     // Todavía no hay proveedor de newsletter conectado: no se envía nada y no
     // se simula ningún resultado. Al conectarlo, este es el único punto a tocar.
+    // Mientras tanto se dice la verdad, en vez de dejar el botón sin respuesta.
     event.preventDefault();
+    setSubmitted(true);
   };
 
   const water = (ref: RefObject<HTMLVideoElement>) => (
@@ -274,6 +277,12 @@ export function RhythmSection() {
           {registerCopy.cta}
         </button>
       </form>
+      <p
+        role="status"
+        className="mt-4 min-h-[1.25em] font-sans text-[12px] leading-relaxed text-ivory/72"
+      >
+        {submitted ? registerCopy.pendingNotice : ""}
+      </p>
     </>
   );
 

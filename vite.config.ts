@@ -24,6 +24,16 @@ export default defineConfig(({ mode }) => {
     base: '/',
     build: {
       outDir: 'dist',
+      rollupOptions: {
+        output: {
+          // Librerías estables en chunks propios: un deploy que solo cambia
+          // código del sitio no invalida su caché en el navegador.
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            motion: ['gsap', 'lenis'],
+          },
+        },
+      },
     }
   };
 });

@@ -9,10 +9,12 @@ import { ProductMeta } from "@/components/ui/ProductMeta";
 import { IngredientList } from "@/components/ui/IngredientList";
 import { CTAButton } from "@/components/ui/CTAButton";
 import { getProductBySlug, products } from "@/data/products";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const product = slug ? getProductBySlug(slug) : undefined;
+  usePageTitle(product ? product.name : "Serum no encontrado");
 
   // Slug inválido: estado controlado, no rompe la página.
   if (!product) {
@@ -49,10 +51,10 @@ const ProductDetail = () => {
           <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
             <ProductDisplay product={product} aspectRatio="4 / 5" />
             <div className="flex flex-col gap-6">
-              <ProductMeta product={product} />
               <EditorialHeading as="h1" size="xl">
                 {product.name}
               </EditorialHeading>
+              <ProductMeta product={product} />
               <NarrativeText size="lg" tone="muted" measure="normal">
                 {product.description}
               </NarrativeText>
@@ -75,7 +77,7 @@ const ProductDetail = () => {
         {related.length > 0 && (
           <SectionWrapper>
             <div className="flex flex-col gap-10">
-              <EditorialHeading eyebrow="Continúa el ritual" size="lg" as="h2">
+              <EditorialHeading eyebrow="Continuá el ritual" size="lg" as="h2">
                 Otros serums
               </EditorialHeading>
               <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">

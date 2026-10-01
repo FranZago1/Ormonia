@@ -101,6 +101,36 @@ export function toggleAnswer(
 }
 
 /**
+ * Descarta respuestas que dejaron de ser opciones válidas.
+ *
+ * Una pregunta que hereda opciones excluye lo elegido en su origen. Si la
+ * persona vuelve y cambia el origen a lo que había elegido en la heredada, esa
+ * respuesta quedaría guardada pero invisible —y duplicada—. Acá se limpia; si
+ * la pregunta queda vacía, vuelve a pedir respuesta.
+ */
+export function pruneAnswers(
+  questions: QuizQuestion[],
+  answers: QuizAnswers
+): QuizAnswers {
+  let next = answers;
+  for (const question of questions) {
+    const current = next[question.id];
+    if (!question.inheritOptionsFrom || !current?.length) continue;
+    const valid = resolveOptions(question, questions, next).map((o) => o.id);
+    const kept = current.filter((id) => valid.includes(id));
+    if (kept.length !== current.length) {
+      next = { ...next, [question.id]: kept };
+    }
+  }
+  return next;
+}
+
+/** ¿Hay al menos una respuesta registrada? */
+export function hasAnswers(answers: QuizAnswers): boolean {
+  return Object.values(answers).some((ids) => ids.length > 0);
+}
+
+/**
  * Lectura de la piel.
  *
  * SPRINT 07B ENTRA ACÁ Y SOLO ACÁ.

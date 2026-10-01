@@ -159,7 +159,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
   const isLight = tone === "light";
 
   const linkBase = cn(
-    "relative whitespace-nowrap font-sans text-[13px] uppercase tracking-[0.13em] transition-colors duration-[380ms] ease-out xl:text-[14px]",
+    "relative whitespace-nowrap font-sans text-[13px] uppercase tracking-[0.13em] transition-colors duration-380 ease-out xl:text-[14px]",
     isLight && "[text-shadow:0_1px_14px_rgba(25,21,17,0.45)]"
   );
 
@@ -176,7 +176,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
   return (
     <>
       {/* Franja de envío: en el flujo del documento, queda atrás al scrollear. */}
-      <div ref={barRef}>
+      <div ref={barRef} role="region" aria-label="Aviso de envío">
         <AnnouncementBar />
       </div>
 
@@ -185,7 +185,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
         // `top` lo gobierna el efecto de scroll; la transición excluye `top`
         // a propósito para que el offset bajo la franja siga al scroll 1:1.
         className={cn(
-          "fixed inset-x-0 z-50 transition-[transform,opacity] duration-[420ms] ease-out",
+          "fixed inset-x-0 z-50 transition-[transform,opacity] duration-420 ease-out",
           "focus-within:translate-y-0 focus-within:opacity-100",
           revealed
             ? "translate-y-0 opacity-100"
@@ -223,7 +223,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
                     size="icon"
                     aria-label="Abrir menú"
                     className={cn(
-                      "-ml-2 h-10 w-10 transition-colors duration-[380ms] ease-out hover:bg-transparent",
+                      "-ml-2 h-10 w-10 transition-colors duration-380 ease-out hover:bg-transparent",
                       isLight ? "text-ivory" : "text-ink"
                     )}
                   >
@@ -288,7 +288,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
               to="/"
               aria-label="ORMONIA — Inicio"
               className={cn(
-                "justify-self-center whitespace-nowrap font-display text-[clamp(2.25rem,2.6vw,3.25rem)] uppercase leading-none tracking-[0.09em] transition-colors duration-[380ms] ease-out",
+                "justify-self-center whitespace-nowrap font-display text-[clamp(2.25rem,2.6vw,3.25rem)] uppercase leading-none tracking-[0.09em] transition-colors duration-380 ease-out",
                 isLight
                   ? "text-ivory [text-shadow:0_2px_22px_rgba(25,21,17,0.4)]"
                   : "text-ink"

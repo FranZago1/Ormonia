@@ -63,6 +63,8 @@ export function ScrollCTAButton({
     try {
       const lenis = getLenis();
       if (lenis) {
+        // Tras volver de otra ruta Lenis puede conservar un límite viejo.
+        lenis.resize();
         lenis.scrollTo(el, { offset, duration: 1.4 });
         return;
       }

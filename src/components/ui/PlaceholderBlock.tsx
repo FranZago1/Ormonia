@@ -32,7 +32,7 @@ export function PlaceholderBlock({
       style={{ aspectRatio, ...style }}
       {...rest}
     >
-      <span className="select-none text-center font-sans text-[10px] uppercase tracking-editorial text-muted-foreground/80">
+      <span className="select-none text-center font-sans text-[10px] uppercase tracking-editorial text-muted-foreground">
         {label}
       </span>
     </div>

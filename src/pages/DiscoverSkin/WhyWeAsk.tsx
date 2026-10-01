@@ -24,7 +24,7 @@ export function WhyWeAsk({ explanation }: WhyWeAskProps) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="flex items-center gap-2.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ink/60 transition-colors duration-300 hover:text-ink"
+        className="flex items-center gap-2.5 font-sans text-[10px] uppercase tracking-[0.2em] text-ink/66 transition-colors duration-300 hover:text-ink"
       >
         {skinQuizCopy.whyLabel}
         <ChevronDown

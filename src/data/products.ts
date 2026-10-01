@@ -38,7 +38,7 @@ export const products: Product[] = [
   {
     slug: "clarity",
     price: 55000,
-    imageSrc: "/products/clarity.png",
+    imageSrc: "/products/clarity.webp",
     name: "CLARITY",
     phase: "Menstrual",
     tagline: "Claridad que retorna.",
@@ -54,7 +54,7 @@ export const products: Product[] = [
   {
     slug: "bloom",
     price: 55000,
-    imageSrc: "/products/bloom.png",
+    imageSrc: "/products/bloom.webp",
     name: "BLOOM",
     phase: "Follicular",
     tagline: "Despierta y florece.",
@@ -70,7 +70,7 @@ export const products: Product[] = [
   {
     slug: "radiance",
     price: 55000,
-    imageSrc: "/products/radiance.png",
+    imageSrc: "/products/radiance.webp",
     name: "RADIANCE",
     phase: "Ovulatory",
     tagline: "Luz en su punto alto.",
@@ -85,7 +85,7 @@ export const products: Product[] = [
   {
     slug: "restore",
     price: 55000,
-    imageSrc: "/products/restore.png",
+    imageSrc: "/products/restore.webp",
     name: "RESTORE",
     phase: "Luteal",
     tagline: "Repara y prepara.",

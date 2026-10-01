@@ -31,7 +31,7 @@ export function DiscoverVisual({ group }: DiscoverVisualProps) {
           <div
             key={scene.id}
             className={cn(
-              "absolute inset-0 motion-safe:transition-opacity motion-safe:duration-[900ms] motion-safe:ease-out",
+              "absolute inset-0 motion-safe:transition-opacity motion-safe:duration-900 motion-safe:ease-out",
               active ? "opacity-100" : "opacity-0"
             )}
             style={{ backgroundColor: scene.tone }}

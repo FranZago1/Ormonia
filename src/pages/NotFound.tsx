@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { notFoundCopy } from "@/data/content";
 import { CTAButton } from "@/components/ui/CTAButton";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const NotFound = () => {
+  usePageTitle("Página no encontrada");
   const location = useLocation();
 
   useEffect(() => {
@@ -11,7 +13,10 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center">
+    <main
+      id="main"
+      className="flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center"
+    >
       <div className="flex flex-col gap-6">
         <span className="font-display text-[clamp(4rem,18vw,9rem)] leading-none tracking-[-0.03em] text-accent">
           {notFoundCopy.code}
@@ -26,7 +31,7 @@ const NotFound = () => {
           <CTAButton to="/">{notFoundCopy.cta}</CTAButton>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

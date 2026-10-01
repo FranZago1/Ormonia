@@ -7,6 +7,7 @@ import { AnswerOption } from "./AnswerOption";
 import { DiscoverShell } from "./DiscoverShell";
 import { EmailCapture } from "./EmailCapture";
 import { WhyWeAsk } from "./WhyWeAsk";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 /** Duración del relevo entre pasos. La salida ocupa la primera mitad. */
 const LEAVE_MS = 190;
@@ -23,6 +24,7 @@ const LEAVE_MS = 190;
  * de opciones en `lib/skinQuiz`. Esta vista solo presenta y encamina.
  */
 const DiscoverSkin = () => {
+  usePageTitle("Descubrí tu piel");
   const navigate = useNavigate();
   const quiz = useSkinQuiz(skinQuizQuestions);
   const [leaving, setLeaving] = useState(false);
@@ -78,7 +80,7 @@ const DiscoverSkin = () => {
         <div
           key={quiz.question?.id ?? "email"}
           className={cn(
-            "flex-1 motion-safe:transition-[opacity,transform] motion-safe:duration-[380ms] motion-safe:ease-out",
+            "flex-1 motion-safe:transition-[opacity,transform] motion-safe:duration-380 motion-safe:ease-out",
             leaving
               ? "opacity-0 motion-safe:-translate-y-3"
               : "opacity-100 motion-safe:translate-y-0"
@@ -89,14 +91,14 @@ const DiscoverSkin = () => {
           ) : (
             quiz.question && (
               <div className="max-w-[560px]">
-                <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/50">
+                <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/66">
                   {quiz.question.category}
                 </p>
                 <h1 className="mt-6 font-display text-[clamp(1.75rem,2.9vw,2.5rem)] leading-[1.1] tracking-[-0.03em]">
                   {quiz.question.question}
                 </h1>
                 {quiz.question.helper && (
-                  <p className="mt-4 font-sans text-[13px] leading-relaxed text-ink/60">
+                  <p className="mt-4 font-sans text-[13px] leading-relaxed text-ink/66">
                     {quiz.question.helper}
                   </p>
                 )}
@@ -131,7 +133,7 @@ const DiscoverSkin = () => {
                 type="button"
                 onClick={() => transition(quiz.back)}
                 disabled={!quiz.canGoBack}
-                className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink/55 transition-colors duration-300 hover:text-ink disabled:pointer-events-none disabled:opacity-30"
+                className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink/66 transition-colors duration-300 hover:text-ink disabled:pointer-events-none disabled:opacity-30"
               >
                 {skinQuizCopy.back}
               </button>
@@ -151,7 +153,7 @@ const DiscoverSkin = () => {
               </button>
 
               {quiz.showRequiredHint && (
-                <span className="font-sans text-[11px] text-ink/60">
+                <span className="font-sans text-[11px] text-ink/66">
                   {skinQuizCopy.requiredHint}
                 </span>
               )}

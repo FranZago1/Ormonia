@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   isAnswered,
+  pruneAnswers,
   resolveOptions,
   toggleAnswer,
   type QuizAnswers,
@@ -10,6 +11,59 @@ import {
 
 /** El recorrido son las preguntas más un paso final de email. */
 export const EMAIL_STEP = "email";
+
+/**
+ * Progreso guardado en la pestaña: recargar no borra el recorrido y el
+ * resultado puede releerse. Solo respuestas y paso; el email nunca se guarda.
+ * `sessionStorage` muere con la pestaña, así que no queda nada entre visitas.
+ */
+const STORAGE_KEY = "ormonia:skin-quiz";
+
+interface StoredQuiz {
+  step: number;
+  answers: QuizAnswers;
+}
+
+function isAnswerMap(value: unknown): value is QuizAnswers {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    Object.values(value).every(
+      (ids) => Array.isArray(ids) && ids.every((id) => typeof id === "string")
+    )
+  );
+}
+
+export function readStoredQuiz(): StoredQuiz | null {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StoredQuiz>;
+    if (typeof parsed.step !== "number" || !isAnswerMap(parsed.answers)) {
+      return null;
+    }
+    return { step: parsed.step, answers: parsed.answers };
+  } catch {
+    // Almacenamiento bloqueado o dato corrupto: se empieza de cero.
+    return null;
+  }
+}
+
+function writeStoredQuiz(value: StoredQuiz) {
+  try {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+  } catch {
+    // Sin almacenamiento el recorrido funciona igual, solo no sobrevive a un reload.
+  }
+}
+
+export function clearStoredQuiz() {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Nada que limpiar.
+  }
+}
 
 interface UseSkinQuiz {
   step: number;
@@ -39,11 +93,21 @@ interface UseSkinQuiz {
  * pregunta y se conservan al navegar en cualquier dirección.
  */
 export function useSkinQuiz(questions: QuizQuestion[]): UseSkinQuiz {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+  const totalSteps = questions.length + 1;
+
+  const [initial] = useState(readStoredQuiz);
+  const [step, setStep] = useState(() =>
+    Math.min(Math.max(0, initial?.step ?? 0), totalSteps - 1)
+  );
+  const [answers, setAnswers] = useState<QuizAnswers>(
+    () => initial?.answers ?? {}
+  );
   const [showRequiredHint, setShowRequiredHint] = useState(false);
 
-  const totalSteps = questions.length + 1;
+  useEffect(() => {
+    writeStoredQuiz({ step, answers });
+  }, [step, answers]);
+
   const isEmailStep = step >= questions.length;
   const question = isEmailStep ? null : questions[step];
 
@@ -55,10 +119,12 @@ export function useSkinQuiz(questions: QuizQuestion[]): UseSkinQuiz {
   const select = useCallback(
     (optionId: string) => {
       if (!question) return;
-      setAnswers((current) => toggleAnswer(question, current, optionId));
+      setAnswers((current) =>
+        pruneAnswers(questions, toggleAnswer(question, current, optionId))
+      );
       setShowRequiredHint(false);
     },
-    [question]
+    [question, questions]
   );
 
   const canAdvance = question ? isAnswered(question, answers) : true;

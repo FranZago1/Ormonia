@@ -58,7 +58,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "66vw", top: "70vh", width: "36vw", height: "44vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "34% 72%",
         opacity: 0.07,
@@ -93,7 +93,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "66vw", top: "28vh", width: "40vw", height: "50vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "48% 52%",
         opacity: 0.12,
@@ -127,7 +127,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "80vw", top: "18vh", width: "38vw", height: "46vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "72% 34%",
         opacity: 0.1,
@@ -161,7 +161,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "72vw", top: "78vh", width: "42vw", height: "42vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "38% 62%",
         opacity: 0.09,
@@ -388,6 +388,8 @@ export function CycleSection() {
   const entryVeilRef = useRef<HTMLDivElement>(null);
   const exitVeilRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<ScrollTrigger | null>(null);
+  /** Solo con reduced motion: muestra una fase sin scroll ni animación. */
+  const showPhaseRef = useRef<((index: number) => void) | null>(null);
 
   const phases = useMemo(
     () => products.filter((product) => product.phase !== null),
@@ -404,7 +406,11 @@ export function CycleSection() {
    */
   const goToPhase = useCallback((index: number) => {
     const trigger = triggerRef.current;
-    if (!trigger) return;
+    if (!trigger) {
+      // Reduced motion: no hay recorrido que scrollear; se cambia la escena.
+      showPhaseRef.current?.(index);
+      return;
+    }
 
     const target =
       trigger.start + (trigger.end - trigger.start) * progressOfPhase(index);
@@ -440,95 +446,96 @@ export function CycleSection() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
+      /**
+       * Único punto de escritura de la escena.
+       *
+       * Todo —frascos, fondo, luz, copy, tinta e indicador— se deriva del
+       * mismo escalar `t` (0 = CLARITY … 3 = RESTORE). No hay keyframes ni
+       * umbrales: cualquier posición de scroll produce un estado válido, y
+       * scrollear hacia atrás es exactamente simétrico. El modo reduced motion
+       * usa la misma función con valores enteros.
+       */
+      const paint = (slots: ReturnType<typeof makeSlots>) => (t: number) => {
+        // 1. Frascos: rotación física continua.
+        bottles.forEach((bottle, productIndex) => {
+          const u = (initialSlotByProduct[productIndex] + t) % slots.length;
+          const at = placement(u, slots);
+          gsap.set(bottle, {
+            x: at.x,
+            y: at.y,
+            scale: at.scale,
+            rotation: at.rotation,
+            opacity: at.opacity,
+            zIndex: Math.round(at.zIndex),
+            filter: `blur(${at.blur.toFixed(2)}px)`,
+          });
+        });
+
+        /*
+         * 2. Fondos: revelado acumulativo. Cada escena se monta sobre la
+         * anterior y empieza a entrar mucho antes de que su fase llegue al
+         * centro, así el color nuevo ya está presente durante la transición.
+         */
+        const sceneAlpha: number[] = [1];
+        for (let k = 1; k < scenes.length; k += 1) {
+          sceneAlpha[k] = smoothstep(k - 0.85, k - 0.05, t);
+        }
+        scenes.forEach((scene, k) => {
+          gsap.set(scene, { opacity: sceneAlpha[k] });
+        });
+
+        // 3. Luz de contacto: peso por fase, para que no se acumulen.
+        lights.forEach((light, k) => {
+          gsap.set(light, { opacity: Math.max(0, 1 - Math.abs(t - k)) });
+        });
+
+        // 4. Copy: relevo limpio, sin dos textos legibles a la vez.
+        copies.forEach((copy, k) => {
+          const d = t - k;
+          gsap.set(copy, {
+            autoAlpha: 1 - smoothstep(0.3, 0.48, Math.abs(d)),
+            y: Math.max(-16, Math.min(16, -d * 22)),
+          });
+        });
+
+        /*
+         * 5. Tinta compartida: se compone con los mismos pesos que los
+         * fondos, así el contraste del titular acompaña la escena en vez de
+         * cruzarla con su propio tiempo.
+         */
+        let ink: [number, number, number] = [...phaseInk[0]];
+        for (let k = 1; k < phaseInk.length; k += 1) {
+          const next = phaseInk[k];
+          const a = sceneAlpha[k];
+          ink = [
+            lerp(ink[0], next[0], a),
+            lerp(ink[1], next[1], a),
+            lerp(ink[2], next[2], a),
+          ];
+        }
+        const inkCss = `rgb(${ink.map((c) => Math.round(c)).join(",")})`;
+        gsap.set(tinted, { color: inkCss });
+        gsap.set([railHighlightRef.current, railTrackRef.current], {
+          backgroundColor: inkCss,
+        });
+
+        // 6. Indicador: deriva del mismo `t`, no puede desfasarse.
+        gsap.set(railHighlightRef.current, { xPercent: 100 * t });
+        railLabels.forEach((label, k) => {
+          gsap.set(label, {
+            opacity: 0.35 + 0.65 * Math.max(0, 1 - Math.abs(t - k)),
+          });
+        });
+      };
+
       const build = (spread: [number, number, number]) => () => {
         const slots = makeSlots(spread);
+        const renderAt = paint(slots);
+        const render = (progress: number) => renderAt(phaseAt(progress));
 
         gsap.set(bottles, { transformOrigin: "50% 100%" });
         gsap.set(entryVeilRef.current, { autoAlpha: 0.55 });
         gsap.set(exitVeilRef.current, { autoAlpha: 0 });
-
-        /**
-         * Único punto de escritura de la escena.
-         *
-         * Todo —frascos, fondo, luz, copy, tinta e indicador— se deriva del
-         * mismo escalar `t`. No hay keyframes ni umbrales: cualquier posición
-         * de scroll produce un estado válido, y scrollear hacia atrás es
-         * exactamente simétrico.
-         */
-        const render = (progress: number) => {
-          const t = phaseAt(progress);
-
-          // 1. Frascos: rotación física continua.
-          bottles.forEach((bottle, productIndex) => {
-            const u = (initialSlotByProduct[productIndex] + t) % slots.length;
-            const at = placement(u, slots);
-            gsap.set(bottle, {
-              x: at.x,
-              y: at.y,
-              scale: at.scale,
-              rotation: at.rotation,
-              opacity: at.opacity,
-              zIndex: Math.round(at.zIndex),
-              filter: `blur(${at.blur.toFixed(2)}px)`,
-            });
-          });
-
-          /*
-           * 2. Fondos: revelado acumulativo. Cada escena se monta sobre la
-           * anterior y empieza a entrar mucho antes de que su fase llegue al
-           * centro, así el color nuevo ya está presente durante la transición.
-           */
-          const sceneAlpha: number[] = [1];
-          for (let k = 1; k < scenes.length; k += 1) {
-            sceneAlpha[k] = smoothstep(k - 0.85, k - 0.05, t);
-          }
-          scenes.forEach((scene, k) => {
-            gsap.set(scene, { opacity: sceneAlpha[k] });
-          });
-
-          // 3. Luz de contacto: peso por fase, para que no se acumulen.
-          lights.forEach((light, k) => {
-            gsap.set(light, { opacity: Math.max(0, 1 - Math.abs(t - k)) });
-          });
-
-          // 4. Copy: relevo limpio, sin dos textos legibles a la vez.
-          copies.forEach((copy, k) => {
-            const d = t - k;
-            gsap.set(copy, {
-              autoAlpha: 1 - smoothstep(0.3, 0.48, Math.abs(d)),
-              y: Math.max(-16, Math.min(16, -d * 22)),
-            });
-          });
-
-          /*
-           * 5. Tinta compartida: se compone con los mismos pesos que los
-           * fondos, así el contraste del titular acompaña la escena en vez de
-           * cruzarla con su propio tiempo.
-           */
-          let ink: [number, number, number] = [...phaseInk[0]];
-          for (let k = 1; k < phaseInk.length; k += 1) {
-            const next = phaseInk[k];
-            const a = sceneAlpha[k];
-            ink = [
-              lerp(ink[0], next[0], a),
-              lerp(ink[1], next[1], a),
-              lerp(ink[2], next[2], a),
-            ];
-          }
-          const inkCss = `rgb(${ink.map((c) => Math.round(c)).join(",")})`;
-          gsap.set(tinted, { color: inkCss });
-          gsap.set([railHighlightRef.current, railTrackRef.current], {
-            backgroundColor: inkCss,
-          });
-
-          // 6. Indicador: deriva del mismo `t`, no puede desfasarse.
-          gsap.set(railHighlightRef.current, { xPercent: 100 * t });
-          railLabels.forEach((label, k) => {
-            gsap.set(label, {
-              opacity: 0.35 + 0.65 * Math.max(0, 1 - Math.abs(t - k)),
-            });
-          });
-        };
 
         render(0);
 
@@ -581,29 +588,22 @@ export function CycleSection() {
         build([-228, -120, 148])
       );
 
-      // Reduced motion: escena estática legible, sin pin ni rotación.
+      /*
+       * Reduced motion: escena estática, sin pin ni rotación. La sección deja
+       * de medir 280vh (ver `motion-reduce:md:h-auto`) y los indicadores
+       * cambian de fase al instante, así las cuatro fórmulas siguen siendo
+       * alcanzables sin depender del scroll.
+       */
       mm.add("(min-width: 768px) and (prefers-reduced-motion: reduce)", () => {
-        const slots = makeSlots([-228, -120, 148]);
+        const renderAt = paint(makeSlots([-228, -120, 148]));
         gsap.set(bottles, { transformOrigin: "50% 100%" });
-        bottles.forEach((bottle, productIndex) => {
-          const at = placement(initialSlotByProduct[productIndex], slots);
-          gsap.set(bottle, {
-            x: at.x,
-            y: at.y,
-            scale: at.scale,
-            rotation: at.rotation,
-            opacity: at.opacity,
-            zIndex: Math.round(at.zIndex),
-          });
-        });
-        gsap.set(copies, { autoAlpha: 0 });
-        gsap.set(copies[0], { autoAlpha: 1, y: 0 });
-        gsap.set(scenes, { opacity: 0 });
-        gsap.set(scenes[0], { opacity: 1 });
-        gsap.set(lights, { opacity: 0 });
-        gsap.set(lights[0], { opacity: 1 });
         gsap.set(entryVeilRef.current, { autoAlpha: 0 });
         gsap.set(exitVeilRef.current, { autoAlpha: 0 });
+        renderAt(0);
+        showPhaseRef.current = renderAt;
+        return () => {
+          showPhaseRef.current = null;
+        };
       });
 
       return () => mm.revert();
@@ -616,7 +616,7 @@ export function CycleSection() {
     <section
       id="ciclo"
       ref={sectionRef}
-      className="relative bg-[#5A2A32] md:h-[280vh]"
+      className="relative bg-[#5A2A32] md:h-[280vh] motion-reduce:md:h-auto"
       aria-labelledby="cycle-heading"
     >
       {/* Tramos con escena oscura: el header invierte a texto ivory al pasar
@@ -819,7 +819,7 @@ export function CycleSection() {
           sin pin ni carrusel. Cada fase conserva su atmósfera y su color. */}
       <div className="md:hidden">
         <div className="relative overflow-hidden bg-[#5A2A32] px-6 pb-12 pt-28">
-          <div className="pointer-events-none absolute inset-0 bg-[url('/pradera-y-caballo.png')] bg-cover bg-center opacity-[0.07] blur-sm" />
+          <div className="pointer-events-none absolute inset-0 bg-[url('/pradera-y-caballo.jpg')] bg-cover bg-center opacity-[0.07] blur-sm" />
           <div className="relative z-10" style={{ color: IVORY }}>
             <p
               className="mb-5 font-sans text-[10px] uppercase tracking-[0.22em]"

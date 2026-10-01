@@ -47,9 +47,9 @@ export function HeroLandscape() {
         "(prefers-reduced-motion: reduce)"
       ).matches;
 
-      const entrance = [statementRef, ctaRef]
-        .map((r) => r.current)
-        .filter((el): el is HTMLElement => el !== null);
+      const entrance = [statementRef.current, ctaRef.current].filter(
+        (el): el is HTMLHeadingElement | HTMLDivElement => el !== null
+      );
 
       if (prefersReducedMotion) {
         gsap.set(entrance, { opacity: 1, y: 0 });

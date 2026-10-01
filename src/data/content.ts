@@ -6,7 +6,7 @@
 export const brandCopy = {
   wordmark: "ORMONIA",
   tagline: "Lo que cambia adentro se expresa afuera.",
-  shortPitch: "Serums rituales formulados para cada fase del ciclo.",
+  shortPitch: "Fórmulas pensadas para acompañar lo que tu piel necesita.",
 };
 
 /**
@@ -37,7 +37,7 @@ export const nav = {
     { label: "Tienda", href: "/products" },
     { label: "Sobre Ormonia", href: "/about" },
     { label: "Explorar", href: "/learn" },
-    { label: "Descubrir tu ritual", href: "/discover" },
+    { label: "Descubrí tu piel", href: "/descubri-tu-piel" },
     // Placeholder: futuro punto de entrada al carrito/ritual (se conectará en un sprint posterior).
     { label: "Tu ritual", href: null as string | null },
   ],
@@ -52,17 +52,23 @@ export const heroCopy = {
 };
 
 /**
- * Popup diferido de descubrimiento (Sprint 01).
- * No implementa el quiz: solo la invitación. La lógica de fenotipos se define
- * en Sprint 07, cuando la CEO cierre el modelo.
+ * Popup diferido de descubrimiento.
+ *
+ * Invita al diagnóstico real (`/descubri-tu-piel`). "Fenotipo" aparece solo
+ * como microcopy secundario (eyebrow) y no se define: el modelo de fenotipos
+ * todavía no existe (Sprint 07B). El cuerpo reutiliza la bajada aprobada de
+ * la entrada en Home, sin atar la piel al ciclo.
+ *
+ * `incentive`: el 5% está aprobado en el Master Plan pero todavía no hay
+ * mecanismo para aplicarlo (Shopify). Se mantiene el texto existente.
  */
 export const discoverPopupCopy = {
-  eyebrow: "Descubrimiento",
+  eyebrow: "Fenotipo de piel",
   title: "Descubrí tu piel",
-  body: "Tu fenotipo describe cómo responde tu piel a lo largo del ciclo. Reconocerlo es el primer gesto para construir un ritual más propio.",
+  body: "Un recorrido breve para entender cómo se comporta tu piel y qué necesita hoy.",
   incentive: "5% off en tu primer ritual",
   cta: "Descubrir mi piel",
-  ctaHref: "/discover",
+  ctaHref: "/descubri-tu-piel",
   dismiss: "Ahora no",
   close: "Cerrar",
 };
@@ -73,7 +79,7 @@ export const discoverPopupCopy = {
  * esta sola línea. `alt` describe la escena para lectores de pantalla.
  */
 export const heroMedia = {
-  src: "/pradera-y-caballo.png",
+  src: "/pradera-y-caballo.jpg",
   alt: "Pradera abierta bajo luz cálida con un caballo pastando; tonos verdes y tierra.",
 };
 
@@ -160,16 +166,16 @@ export const packCopy = {
     /**
      * Assets provisionales del estuche del Pack x4 (1200×896).
      *
-     * `pack-box-dark.png` —la caja negra vista desde arriba— queda disponible
+     * `pack-box-dark.jpg` —la caja negra vista desde arriba— queda disponible
      * como tercera imagen futura. No hay galería todavía.
      */
     primary: {
-      src: "/products/pack-box-open.png",
+      src: "/products/pack-box-open.jpg",
       alt: "Estuche abierto del Pack x4 de Ormonia con los serums en su interior.",
     },
     /** En `null` la pieza usa una sola imagen estable, sin crossfade. */
     hover: {
-      src: "/products/pack-box-hand.png",
+      src: "/products/pack-box-hand.jpg",
       alt: "",
     } as { src: string; alt: string } | null,
   },
@@ -177,7 +183,7 @@ export const packCopy = {
 
 export const insideOutsideCopy = {
   eyebrow: "Adentro / afuera",
-  title: "Lo que vives adentro se ve afuera.",
+  title: "Lo que vivís adentro se ve afuera.",
   body: "El descanso, la hidratación, el estrés y el ánimo dejan huella en la piel. No se trata de corregir, sino de acompañar lo que ya está cambiando.",
   caption: "Cuidado como reflejo, no como corrección.",
 };
@@ -185,7 +191,7 @@ export const insideOutsideCopy = {
 export const ritualWords = ["Escuchar", "Observar", "Acompañar", "Cuidar"];
 
 export const discoverCopy = {
-  eyebrow: "Encuentra tu ritmo",
+  eyebrow: "Encontrá tu ritmo",
   title: "¿En qué fase estás hoy?",
   body: "Un breve quiz te acerca al serum que tu piel pide ahora mismo. Sin prisa, sin prescripción.",
   cta: "Descubrir mi ritual",
@@ -238,30 +244,81 @@ export const discoverSkinCopy = {
   },
 };
 
+/**
+ * HOME 07 — Lecturas para el ritual.
+ *
+ * Bloque editorial: cambia el ritmo después de la campaña de Descubrí tu piel.
+ * No es otra zona de compra ni una grilla de blog.
+ *
+ * Cada pieza declara su formato (`kind`): un video de YouTube, una nota o un
+ * escrito. El primer ítem es el destacado. Para publicar una pieza real basta
+ * con completar `href` (ruta interna o URL externa) y `media`; mientras `href`
+ * sea `null` la pieza se muestra como "Próximamente" y no enlaza a ningún
+ * lado. No inventar links ni contenido.
+ *
+ * Los tres textos actuales vienen del contenido existente del repo.
+ */
+export type ReadingKind = "video" | "nota" | "escrito";
+
+export interface Reading {
+  id: string;
+  kind: ReadingKind;
+  /** Etiqueta editorial visible (Ensayo, Glosa, Práctica…). */
+  label: string;
+  title: string;
+  teaser: string;
+  href: string | null;
+  /** Imagen de portada. `null` mientras no exista la pieza de producción. */
+  media: { src: string; alt: string } | null;
+  /** Duración ("12 min") o tiempo de lectura, si se conoce. */
+  meta?: string | null;
+}
+
 export const learnCopy = {
-  eyebrow: "Aprender",
+  eyebrow: "Lecturas",
   title: "Lecturas para el ritual.",
   body: "Botánica, ciclo y cuidado. Material editorial para acompañar tu práctica.",
-  cards: [
+  cta: "Ver todas las lecturas",
+  ctaHref: "/learn",
+  soon: "Próximamente",
+  kindLabel: {
+    video: "Video",
+    nota: "Nota",
+    escrito: "Escrito",
+  } as Record<ReadingKind, string>,
+  pending: "Producción · imagen editorial",
+  readings: [
     {
+      id: "ciclo-guia-estacional",
+      kind: "escrito",
+      label: "Ensayo",
       title: "El ciclo como guía estacional",
       teaser:
         "Por qué tu piel pide cosas distintas en cada fase y cómo leer esas señales.",
-      label: "Ensayo",
+      href: null,
+      media: null,
     },
     {
+      id: "botanica-de-los-serums",
+      kind: "nota",
+      label: "Glosa",
       title: "Botánica de los serums",
       teaser:
         "Los activos de cada fórmula, su origen y su función en el gesto del ritual.",
-      label: "Glosa",
+      href: null,
+      media: null,
     },
     {
+      id: "ritual-paso-a-paso",
+      kind: "nota",
+      label: "Práctica",
       title: "El ritual paso a paso",
       teaser:
         "Cómo aplicar, en qué orden y cuándo. Una guía sencilla para sostener la práctica.",
-      label: "Práctica",
+      href: null,
+      media: null,
     },
-  ],
+  ] as Reading[],
 };
 
 /**
@@ -280,65 +337,129 @@ export const registerCopy = {
   placeholder: "Tu email",
   cta: "Recibir El Registro",
   disclaimer: "Al registrarte aceptás recibir comunicaciones de ORMONIA.",
+  /**
+   * Respuesta honesta al enviar mientras no haya proveedor conectado: no
+   * confirma una suscripción que no ocurrió. Se elimina al conectar el envío.
+   */
+  pendingNotice: "El Registro todavía no está abierto. Muy pronto vas a poder sumarte.",
 };
+
+/**
+ * HOME 08 — Instagram / Universo ORMONIA.
+ *
+ * Tres piezas visibles, integradas a la estética del sitio (no un widget de
+ * plugin). Hoy no hay cuenta ni API conectadas: `posts` está vacío y se ven
+ * tres campos tonales con su nota de producción.
+ *
+ * Para conectarlo:
+ * - selección curada: completar `posts` a mano (imagen, alt, permalink);
+ * - feed dinámico: la Instagram Graph API necesita un token que no puede vivir
+ *   en el frontend. Un endpoint propio (o servicio aprobado) devuelve esta
+ *   misma forma y la sección no cambia (`lib/instagram.ts`).
+ *
+ * `handle` y `profileUrl` en `null` hasta tener la cuenta confirmada.
+ */
+export interface InstagramPost {
+  id: string;
+  image: string;
+  alt: string;
+  permalink: string;
+}
 
 export const instagramCopy = {
-  eyebrow: "Universo",
+  eyebrow: "Instagram",
   title: "El universo ORMONIA.",
-  note: "Próximamente",
   body: "Rituales, procesos y campo visual. Pronto en Instagram.",
+  note: "Próximamente",
+  handle: null as string | null,
+  profileUrl: null as string | null,
+  follow: "Seguir en Instagram",
+  pending: "Producción · contenido de Instagram",
+  posts: [] as InstagramPost[],
 };
 
+/**
+ * HOME 09 — Cierre "Unite al ritual".
+ *
+ * Cierre emocional (Master Plan §5). No repite la newsletter: El Registro ya
+ * vive en la escena de agua, así que acá solo se lo señala.
+ */
 export const closingCopy = {
   eyebrow: "ORMONIA",
-  title: "Lo que cambia adentro se expresa afuera.",
-  body: "Un ritual que acompaña cada fase.",
+  title: "Unite al ritual.",
+  body: "Lo que cambia adentro se expresa afuera.",
+  links: [
+    { label: "Descubrir mi piel", href: "/descubri-tu-piel" },
+    { label: "Recibir El Registro", href: "/#ritmo" },
+  ],
 };
 
+/**
+ * Footer.
+ *
+ * Los destinos que todavía no existen (ayuda, políticas, redes) quedan en
+ * `null`: se ven como texto inerte y no inventan páginas ni textos legales.
+ * Completar `href` cuando cada página o cuenta exista.
+ */
+export interface FooterLink {
+  label: string;
+  href: string | null;
+}
+
 export const footerCopy = {
-  tagline: "Serums rituales para cada fase del ciclo.",
+  /** Bajada aprobada de Los esenciales: el producto no queda atado a una fase. */
+  tagline: "Fórmulas pensadas para acompañar lo que tu piel necesita.",
   columns: [
     {
       heading: "Tienda",
       links: [
-        { label: "Los serums", href: "/products" },
+        { label: "Los esenciales", href: "/products" },
+        { label: "Pack x4", href: "/#pack-x4" },
         { label: "CLARITY", href: "/products/clarity" },
         { label: "BLOOM", href: "/products/bloom" },
         { label: "RADIANCE", href: "/products/radiance" },
         { label: "RESTORE", href: "/products/restore" },
-      ],
+      ] as FooterLink[],
     },
     {
       heading: "Explorar",
       links: [
-        { label: "Aprender", href: "/learn" },
-        { label: "Descubre", href: "/discover" },
-        { label: "Nosotros", href: "/about" },
-      ],
+        { label: "Sobre ORMONIA", href: "/about" },
+        { label: "Lecturas para el ritual", href: "/learn" },
+        { label: "Descubrí tu piel", href: "/descubri-tu-piel" },
+        { label: "El Registro", href: "/#ritmo" },
+      ] as FooterLink[],
     },
     {
-      heading: "Contacto",
+      heading: "Ayuda",
       links: [
-        { label: "El registro", href: "/#registro" },
-        { label: "Instagram", href: "/#instagram" },
-      ],
+        { label: "Envíos", href: null },
+        { label: "Cambios y devoluciones", href: null },
+        { label: "Preguntas frecuentes", href: null },
+        { label: "Contacto", href: null },
+      ] as FooterLink[],
     },
   ],
-  closing: "ORMONIA — Ritual, ritmo y botánica en armonía.",
+  social: [{ label: "Instagram", href: instagramCopy.profileUrl }] as FooterLink[],
+  legal: [
+    { label: "Términos y condiciones", href: null },
+    { label: "Política de privacidad", href: null },
+  ] as FooterLink[],
+  copyright: "ORMONIA",
 };
 
 export const notFoundCopy = {
   code: "404",
   title: "Esta página todavía no florece.",
-  body: "La dirección no existe o aún no está disponible. Vuelve al ritual para continuar.",
+  body: "La dirección no existe o aún no está disponible. Volvé al ritual para continuar.",
   cta: "Volver al inicio",
 };
 
 export const pageShells = {
   products: {
     eyebrow: "Tienda",
-    title: "Cuatro serums, un ciclo.",
-    body: "Cada serum acompaña una fase. AURA, la niebla de cierre, llegará pronto.",
+    title: "Los esenciales de ORMONIA.",
+    body: "Fórmulas pensadas para acompañar lo que tu piel necesita. AURA, la niebla de cierre, llegará pronto.",
   },
   learn: {
     eyebrow: "Aprender",
@@ -346,9 +467,9 @@ export const pageShells = {
     body: "Pronto: ensayos, glosas y guías prácticas sobre botánica, ciclo y cuidado.",
   },
   discover: {
-    eyebrow: "Descubre",
-    title: "Encuentra tu ritmo.",
-    body: "El quiz de ritmo llegará pronto. Mientras tanto, explora los serums y sus fases.",
+    eyebrow: "Descubrí",
+    title: "Encontrá tu ritmo.",
+    body: "El quiz de ritmo llegará pronto. Mientras tanto, explorá los serums y sus fases.",
   },
   about: {
     eyebrow: "Nosotros",

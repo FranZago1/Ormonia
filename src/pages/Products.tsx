@@ -8,8 +8,10 @@ import { ProductDisplay } from "@/components/ui/ProductDisplay";
 import { ProductMeta } from "@/components/ui/ProductMeta";
 import { products, auraTeaser } from "@/data/products";
 import { pageShells } from "@/data/content";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Products = () => {
+  usePageTitle("Tienda");
   const shell = pageShells.products;
   return (
     <>

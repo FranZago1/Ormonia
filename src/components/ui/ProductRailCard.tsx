@@ -81,7 +81,7 @@ export function ProductRailCard({ product }: ProductRailCardProps) {
           )}
 
           {/* Placeholder del material de campaña futuro. */}
-          <div className="absolute inset-0 flex items-center justify-center bg-ivory px-6 opacity-0 motion-safe:transition-opacity motion-safe:duration-[520ms] motion-safe:ease-out [@media(hover:hover)]:group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-ivory px-6 opacity-0 motion-safe:transition-opacity motion-safe:duration-520 motion-safe:ease-out [@media(hover:hover)]:group-hover:opacity-100">
             <p className="text-center font-sans text-[10px] uppercase leading-[1.9] tracking-[0.22em] text-ink/70">
               Insertar video
               <br />
@@ -104,7 +104,7 @@ export function ProductRailCard({ product }: ProductRailCardProps) {
         </div>
 
         {actives && (
-          <p className="mt-2 font-sans text-[10px] leading-[1.6] tracking-[0.06em] text-ink/62 md:text-[11px]">
+          <p className="mt-2 font-sans text-[10px] leading-[1.6] tracking-[0.06em] text-ink/66 md:text-[11px]">
             {actives}
           </p>
         )}
@@ -113,7 +113,7 @@ export function ProductRailCard({ product }: ProductRailCardProps) {
       <Link
         to={`/products/${product.slug}`}
         aria-label={`Comprar ${product.name}`}
-        className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-ink/12 bg-ivory/55 text-ink opacity-60 backdrop-blur-sm transition-[opacity,background-color,border-color,transform] duration-[380ms] ease-out hover:!opacity-100 focus-visible:opacity-100 group-hover:scale-[1.04] group-hover:border-ink/20 group-hover:bg-ivory/90 group-hover:opacity-100 md:right-6 md:top-6 md:h-12 md:w-12"
+        className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-ink/12 bg-ivory/55 text-ink opacity-60 backdrop-blur-sm transition-[opacity,background-color,border-color,transform] duration-380 ease-out hover:!opacity-100 focus-visible:opacity-100 group-hover:scale-[1.04] group-hover:border-ink/20 group-hover:bg-ivory/90 group-hover:opacity-100 md:right-6 md:top-6 md:h-12 md:w-12"
       >
         <ShoppingBag className="h-[18px] w-[18px]" aria-hidden="true" />
       </Link>

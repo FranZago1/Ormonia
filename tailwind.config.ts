@@ -82,6 +82,41 @@ export default {
 				display: ["var(--font-display)", "serif"],
 				sans: ["var(--font-sans)", "sans-serif"],
 			},
+			/*
+			 * Pasos intermedios de opacidad usados como modificador de color
+			 * (`text-ink/62`, `text-ivory/82`…). Tailwind solo genera los valores
+			 * de su escala (de 5 en 5): sin estas entradas esas clases no existían
+			 * y el elemento heredaba el color del padre.
+			 */
+			opacity: {
+				8: "0.08",
+				12: "0.12",
+				14: "0.14",
+				16: "0.16",
+				18: "0.18",
+				38: "0.38",
+				42: "0.42",
+				58: "0.58",
+				62: "0.62",
+				64: "0.64",
+				66: "0.66",
+				68: "0.68",
+				72: "0.72",
+				82: "0.82",
+			},
+			/*
+			 * Duraciones propias del motion ORMONIA. Como valor arbitrario
+			 * (`duration-[650ms]`) eran ambiguas con `tailwindcss-animate`, que
+			 * también define `duration-*`, y Tailwind no las generaba: las
+			 * transiciones corrían con el default de 150ms.
+			 */
+			transitionDuration: {
+				380: "380ms",
+				420: "420ms",
+				520: "520ms",
+				650: "650ms",
+				900: "900ms",
+			},
 			letterSpacing: {
 				editorial: "0.14em",
 				wide: "0.08em",

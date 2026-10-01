@@ -23,7 +23,7 @@ export function EmailCapture({ onDone }: EmailCaptureProps) {
 
   return (
     <div className="max-w-[460px]">
-      <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/50">
+      <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/66">
         {skinQuizCopy.email.eyebrow}
       </p>
       <h1 className="mt-6 font-display text-[clamp(2rem,3.4vw,2.9rem)] leading-[1.04] tracking-[-0.035em]">
@@ -57,7 +57,7 @@ export function EmailCapture({ onDone }: EmailCaptureProps) {
       <button
         type="button"
         onClick={() => onDone(null)}
-        className="mt-6 font-sans text-[11px] uppercase tracking-[0.18em] text-ink/55 underline-offset-4 transition-colors duration-300 hover:text-ink hover:underline"
+        className="mt-6 font-sans text-[11px] uppercase tracking-[0.18em] text-ink/66 underline-offset-4 transition-colors duration-300 hover:text-ink hover:underline"
       >
         {skinQuizCopy.email.skip}
       </button>
