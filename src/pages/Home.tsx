@@ -8,6 +8,7 @@ import { FourPhasesSection } from "@/components/sections/FourPhasesSection";
 import { InsideOutsideSection } from "@/components/sections/InsideOutsideSection";
 import { RitualSection } from "@/components/sections/RitualSection";
 import { RhythmSection } from "@/components/sections/RhythmSection";
+import { DiscoverYourSkinSection } from "@/components/sections/DiscoverYourSkinSection";
 import { DiscoverYourRhythmSection } from "@/components/sections/DiscoverYourRhythmSection";
 import { LearnSection } from "@/components/sections/LearnSection";
 import { InstagramUniverseSection } from "@/components/sections/InstagramUniverseSection";
@@ -39,6 +40,7 @@ const Home = () => {
         <PackRitualSection />
         <FourPhasesSection />
         <RhythmSection />
+        <DiscoverYourSkinSection />
         <InsideOutsideSection />
         <RitualSection />
         <DiscoverYourRhythmSection />
