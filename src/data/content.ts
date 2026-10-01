@@ -6,7 +6,7 @@
 export const brandCopy = {
   wordmark: "ORMONIA",
   tagline: "Lo que cambia adentro se expresa afuera.",
-  shortPitch: "Serums rituales formulados para cada fase del ciclo.",
+  shortPitch: "Fórmulas pensadas para acompañar lo que tu piel necesita.",
 };
 
 /**
@@ -183,7 +183,7 @@ export const packCopy = {
 
 export const insideOutsideCopy = {
   eyebrow: "Adentro / afuera",
-  title: "Lo que vives adentro se ve afuera.",
+  title: "Lo que vivís adentro se ve afuera.",
   body: "El descanso, la hidratación, el estrés y el ánimo dejan huella en la piel. No se trata de corregir, sino de acompañar lo que ya está cambiando.",
   caption: "Cuidado como reflejo, no como corrección.",
 };
@@ -191,7 +191,7 @@ export const insideOutsideCopy = {
 export const ritualWords = ["Escuchar", "Observar", "Acompañar", "Cuidar"];
 
 export const discoverCopy = {
-  eyebrow: "Encuentra tu ritmo",
+  eyebrow: "Encontrá tu ritmo",
   title: "¿En qué fase estás hoy?",
   body: "Un breve quiz te acerca al serum que tu piel pide ahora mismo. Sin prisa, sin prescripción.",
   cta: "Descubrir mi ritual",
@@ -302,7 +302,8 @@ export const closingCopy = {
 };
 
 export const footerCopy = {
-  tagline: "Serums rituales para cada fase del ciclo.",
+  /** Bajada aprobada de Los esenciales: el producto no queda atado a una fase. */
+  tagline: "Fórmulas pensadas para acompañar lo que tu piel necesita.",
   columns: [
     {
       heading: "Tienda",
@@ -336,15 +337,15 @@ export const footerCopy = {
 export const notFoundCopy = {
   code: "404",
   title: "Esta página todavía no florece.",
-  body: "La dirección no existe o aún no está disponible. Vuelve al ritual para continuar.",
+  body: "La dirección no existe o aún no está disponible. Volvé al ritual para continuar.",
   cta: "Volver al inicio",
 };
 
 export const pageShells = {
   products: {
     eyebrow: "Tienda",
-    title: "Cuatro serums, un ciclo.",
-    body: "Cada serum acompaña una fase. AURA, la niebla de cierre, llegará pronto.",
+    title: "Los esenciales de ORMONIA.",
+    body: "Fórmulas pensadas para acompañar lo que tu piel necesita. AURA, la niebla de cierre, llegará pronto.",
   },
   learn: {
     eyebrow: "Aprender",
@@ -352,9 +353,9 @@ export const pageShells = {
     body: "Pronto: ensayos, glosas y guías prácticas sobre botánica, ciclo y cuidado.",
   },
   discover: {
-    eyebrow: "Descubre",
-    title: "Encuentra tu ritmo.",
-    body: "El quiz de ritmo llegará pronto. Mientras tanto, explora los serums y sus fases.",
+    eyebrow: "Descubrí",
+    title: "Encontrá tu ritmo.",
+    body: "El quiz de ritmo llegará pronto. Mientras tanto, explorá los serums y sus fases.",
   },
   about: {
     eyebrow: "Nosotros",

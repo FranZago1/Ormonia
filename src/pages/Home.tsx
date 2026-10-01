@@ -5,8 +5,6 @@ import { HeroLandscape } from "@/components/sections/HeroLandscape";
 import { CycleSection } from "@/components/sections/CycleSection";
 import { PackRitualSection } from "@/components/sections/PackRitualSection";
 import { FourPhasesSection } from "@/components/sections/FourPhasesSection";
-import { InsideOutsideSection } from "@/components/sections/InsideOutsideSection";
-import { RitualSection } from "@/components/sections/RitualSection";
 import { RhythmSection } from "@/components/sections/RhythmSection";
 import { DiscoverYourSkinSection } from "@/components/sections/DiscoverYourSkinSection";
 import { LearnSection } from "@/components/sections/LearnSection";
@@ -25,8 +23,10 @@ import { ClosingSection } from "@/components/sections/ClosingSection";
  * `RhythmSection`. El componente se conserva en el repo por si se necesita un
  * bloque de registro autónomo en otra página.
  *
- * InsideOutsideSection (Sprint 05) y RitualSection (Sprint 06) se conservan
- * montadas donde estaban: su ubicación definitiva se decide en sus sprints.
+ * InsideOutsideSection (Sprint 05) y RitualSection (Sprint 06) ya no se
+ * montan: no forman parte de la arquitectura aprobada (Handoff §9) y cortaban
+ * el universo claro con un placeholder vacío y un bloque oscuro. Siguen en el
+ * repo y en el roadmap; su ubicación se decide en sus sprints.
  * Ningún bloque futuro se construye anticipadamente para llenar la página.
  *
  * `DiscoverYourRhythmSection` (teaser viejo "¿En qué fase estás hoy?" → /discover)
@@ -44,8 +44,6 @@ const Home = () => {
         <FourPhasesSection />
         <RhythmSection />
         <DiscoverYourSkinSection />
-        <InsideOutsideSection />
-        <RitualSection />
         <LearnSection />
         <InstagramUniverseSection />
         <ClosingSection />

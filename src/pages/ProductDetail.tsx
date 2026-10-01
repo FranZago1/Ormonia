@@ -75,7 +75,7 @@ const ProductDetail = () => {
         {related.length > 0 && (
           <SectionWrapper>
             <div className="flex flex-col gap-10">
-              <EditorialHeading eyebrow="Continúa el ritual" size="lg" as="h2">
+              <EditorialHeading eyebrow="Continuá el ritual" size="lg" as="h2">
                 Otros serums
               </EditorialHeading>
               <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
