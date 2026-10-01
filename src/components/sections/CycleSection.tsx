@@ -58,7 +58,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "66vw", top: "70vh", width: "36vw", height: "44vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "34% 72%",
         opacity: 0.07,
@@ -93,7 +93,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "66vw", top: "28vh", width: "40vw", height: "50vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "48% 52%",
         opacity: 0.12,
@@ -127,7 +127,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "80vw", top: "18vh", width: "38vw", height: "46vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "72% 34%",
         opacity: 0.1,
@@ -161,7 +161,7 @@ const atmospheres: Record<CyclePhase, Atmosphere> = {
     keyLightAt: { left: "72vw", top: "78vh", width: "42vw", height: "42vh" },
     layers: [
       {
-        backgroundImage: "url('/pradera-y-caballo.png')",
+        backgroundImage: "url('/pradera-y-caballo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "38% 62%",
         opacity: 0.09,
@@ -819,7 +819,7 @@ export function CycleSection() {
           sin pin ni carrusel. Cada fase conserva su atmósfera y su color. */}
       <div className="md:hidden">
         <div className="relative overflow-hidden bg-[#5A2A32] px-6 pb-12 pt-28">
-          <div className="pointer-events-none absolute inset-0 bg-[url('/pradera-y-caballo.png')] bg-cover bg-center opacity-[0.07] blur-sm" />
+          <div className="pointer-events-none absolute inset-0 bg-[url('/pradera-y-caballo.jpg')] bg-cover bg-center opacity-[0.07] blur-sm" />
           <div className="relative z-10" style={{ color: IVORY }}>
             <p
               className="mb-5 font-sans text-[10px] uppercase tracking-[0.22em]"

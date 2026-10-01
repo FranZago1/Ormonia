@@ -79,7 +79,7 @@ export const discoverPopupCopy = {
  * esta sola línea. `alt` describe la escena para lectores de pantalla.
  */
 export const heroMedia = {
-  src: "/pradera-y-caballo.png",
+  src: "/pradera-y-caballo.jpg",
   alt: "Pradera abierta bajo luz cálida con un caballo pastando; tonos verdes y tierra.",
 };
 
@@ -166,16 +166,16 @@ export const packCopy = {
     /**
      * Assets provisionales del estuche del Pack x4 (1200×896).
      *
-     * `pack-box-dark.png` —la caja negra vista desde arriba— queda disponible
+     * `pack-box-dark.jpg` —la caja negra vista desde arriba— queda disponible
      * como tercera imagen futura. No hay galería todavía.
      */
     primary: {
-      src: "/products/pack-box-open.png",
+      src: "/products/pack-box-open.jpg",
       alt: "Estuche abierto del Pack x4 de Ormonia con los serums en su interior.",
     },
     /** En `null` la pieza usa una sola imagen estable, sin crossfade. */
     hover: {
-      src: "/products/pack-box-hand.png",
+      src: "/products/pack-box-hand.jpg",
       alt: "",
     } as { src: string; alt: string } | null,
   },
