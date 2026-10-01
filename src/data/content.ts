@@ -191,6 +191,53 @@ export const discoverCopy = {
   cta: "Descubrir mi ritual",
 };
 
+/**
+ * HOME 06 — Descubrí tu piel.
+ *
+ * Entrada al diagnóstico. No explica el cuestionario: invita. La curiosidad
+ * hace el trabajo y el test explica después.
+ *
+ * El copy es la acción que sigue a la reflexión de HOME 05: allí la idea es
+ * que mirar la piel importa; acá, que la tuya responde de una forma propia.
+ * Por eso el titular no vuelve sobre observar.
+ *
+ * ────────────────────────────────────────────────────────────────────────
+ * BRIEF DEL ASSET DEFINITIVO
+ *
+ * Fotografía editorial horizontal, piel real de una persona real, con detalle
+ * visible de textura. Luz natural o suave, sin retoque excesivo. Nada de spa
+ * genérico ni de estética clínica. Debe traer espacio negativo previsto para
+ * el copy —preferentemente a la izquierda— y funcionar recortada tanto en
+ * desktop como en mobile.
+ *
+ * Para incorporarla alcanza con `media.src`, su `alt`, el `tone` según si la
+ * imagen es clara u oscura, y los dos `objectPosition`. El layout no cambia.
+ * ────────────────────────────────────────────────────────────────────────
+ */
+export const discoverSkinCopy = {
+  eyebrow: "Descubrí tu piel",
+  titleLines: ["Tu piel tiene una forma", "propia de responder."],
+  body: "Un recorrido breve para entender cómo se comporta y qué necesita hoy.",
+  cta: "Descubrir mi piel",
+  ctaHref: "/descubri-tu-piel",
+  media: {
+    /** `null` mientras no exista la fotografía de producción. */
+    src: null as string | null,
+    alt: "",
+    /**
+     * Gobierna el contraste de toda la pieza: "light" deja el copy en ink y el
+     * header en su tinta por defecto; "dark" lo pasa todo a ivory y declara el
+     * tono claro para la navegación.
+     */
+    tone: "light" as "light" | "dark",
+    /** Campo tonal mientras no haya imagen. */
+    placeholderTone: "#D4C4AE",
+    objectPosition: "62% 50%",
+    objectPositionMobile: "58% 45%",
+    pending: "Producción · fotografía editorial de piel",
+  },
+};
+
 export const learnCopy = {
   eyebrow: "Aprender",
   title: "Lecturas para el ritual.",
