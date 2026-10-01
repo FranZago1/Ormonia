@@ -1,6 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { skinReadingPlaceholder, skinResultCopy } from "@/data/skinQuiz";
-import { readSkin, type QuizAnswers } from "@/lib/skinQuiz";
+import { clearStoredQuiz, readStoredQuiz } from "@/hooks/useSkinQuiz";
+import { hasAnswers, readSkin, type QuizAnswers } from "@/lib/skinQuiz";
 import { DiscoverShell } from "./DiscoverShell";
 
 /**
@@ -17,11 +18,21 @@ import { DiscoverShell } from "./DiscoverShell";
  * La lectura separa el fenotipo —comportamiento estructural— del estado
  * actual —lo que la piel parece pedir ahora—, para no quedar atada a devolver
  * un único código fijo.
+ *
+ * Sin respuestas (entrada directa por URL o pestaña nueva) no hay lectura que
+ * mostrar: se redirige al comienzo del recorrido en vez de presentar un
+ * resultado que nadie generó.
  */
 const DiscoverSkinResult = () => {
   const location = useLocation();
-  const answers = (location.state as { answers?: QuizAnswers } | null)
-    ?.answers ?? {};
+  const answers =
+    (location.state as { answers?: QuizAnswers } | null)?.answers ??
+    readStoredQuiz()?.answers ??
+    {};
+
+  if (!hasAnswers(answers)) {
+    return <Navigate to="/descubri-tu-piel" replace />;
+  }
 
   const reading = readSkin(answers, skinReadingPlaceholder);
 
@@ -137,6 +148,7 @@ const DiscoverSkinResult = () => {
         <div className="flex flex-wrap items-center gap-6 pt-2">
           <Link
             to="/descubri-tu-piel"
+            onClick={clearStoredQuiz}
             className="h-[52px] rounded-[11px] bg-ink px-8 font-sans text-[12px] uppercase leading-[52px] tracking-[0.2em] text-ivory transition-colors duration-300 hover:bg-deepBrown"
           >
             {skinResultCopy.restart}
