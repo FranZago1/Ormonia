@@ -244,30 +244,81 @@ export const discoverSkinCopy = {
   },
 };
 
+/**
+ * HOME 07 — Lecturas para el ritual.
+ *
+ * Bloque editorial: cambia el ritmo después de la campaña de Descubrí tu piel.
+ * No es otra zona de compra ni una grilla de blog.
+ *
+ * Cada pieza declara su formato (`kind`): un video de YouTube, una nota o un
+ * escrito. El primer ítem es el destacado. Para publicar una pieza real basta
+ * con completar `href` (ruta interna o URL externa) y `media`; mientras `href`
+ * sea `null` la pieza se muestra como "Próximamente" y no enlaza a ningún
+ * lado. No inventar links ni contenido.
+ *
+ * Los tres textos actuales vienen del contenido existente del repo.
+ */
+export type ReadingKind = "video" | "nota" | "escrito";
+
+export interface Reading {
+  id: string;
+  kind: ReadingKind;
+  /** Etiqueta editorial visible (Ensayo, Glosa, Práctica…). */
+  label: string;
+  title: string;
+  teaser: string;
+  href: string | null;
+  /** Imagen de portada. `null` mientras no exista la pieza de producción. */
+  media: { src: string; alt: string } | null;
+  /** Duración ("12 min") o tiempo de lectura, si se conoce. */
+  meta?: string | null;
+}
+
 export const learnCopy = {
-  eyebrow: "Aprender",
+  eyebrow: "Lecturas",
   title: "Lecturas para el ritual.",
   body: "Botánica, ciclo y cuidado. Material editorial para acompañar tu práctica.",
-  cards: [
+  cta: "Ver todas las lecturas",
+  ctaHref: "/learn",
+  soon: "Próximamente",
+  kindLabel: {
+    video: "Video",
+    nota: "Nota",
+    escrito: "Escrito",
+  } as Record<ReadingKind, string>,
+  pending: "Producción · imagen editorial",
+  readings: [
     {
+      id: "ciclo-guia-estacional",
+      kind: "escrito",
+      label: "Ensayo",
       title: "El ciclo como guía estacional",
       teaser:
         "Por qué tu piel pide cosas distintas en cada fase y cómo leer esas señales.",
-      label: "Ensayo",
+      href: null,
+      media: null,
     },
     {
+      id: "botanica-de-los-serums",
+      kind: "nota",
+      label: "Glosa",
       title: "Botánica de los serums",
       teaser:
         "Los activos de cada fórmula, su origen y su función en el gesto del ritual.",
-      label: "Glosa",
+      href: null,
+      media: null,
     },
     {
+      id: "ritual-paso-a-paso",
+      kind: "nota",
+      label: "Práctica",
       title: "El ritual paso a paso",
       teaser:
         "Cómo aplicar, en qué orden y cuándo. Una guía sencilla para sostener la práctica.",
-      label: "Práctica",
+      href: null,
+      media: null,
     },
-  ],
+  ] as Reading[],
 };
 
 /**
@@ -288,18 +339,67 @@ export const registerCopy = {
   disclaimer: "Al registrarte aceptás recibir comunicaciones de ORMONIA.",
 };
 
+/**
+ * HOME 08 — Instagram / Universo ORMONIA.
+ *
+ * Tres piezas visibles, integradas a la estética del sitio (no un widget de
+ * plugin). Hoy no hay cuenta ni API conectadas: `posts` está vacío y se ven
+ * tres campos tonales con su nota de producción.
+ *
+ * Para conectarlo:
+ * - selección curada: completar `posts` a mano (imagen, alt, permalink);
+ * - feed dinámico: la Instagram Graph API necesita un token que no puede vivir
+ *   en el frontend. Un endpoint propio (o servicio aprobado) devuelve esta
+ *   misma forma y la sección no cambia (`lib/instagram.ts`).
+ *
+ * `handle` y `profileUrl` en `null` hasta tener la cuenta confirmada.
+ */
+export interface InstagramPost {
+  id: string;
+  image: string;
+  alt: string;
+  permalink: string;
+}
+
 export const instagramCopy = {
-  eyebrow: "Universo",
+  eyebrow: "Instagram",
   title: "El universo ORMONIA.",
-  note: "Próximamente",
   body: "Rituales, procesos y campo visual. Pronto en Instagram.",
+  note: "Próximamente",
+  handle: null as string | null,
+  profileUrl: null as string | null,
+  follow: "Seguir en Instagram",
+  pending: "Producción · contenido de Instagram",
+  posts: [] as InstagramPost[],
 };
 
+/**
+ * HOME 09 — Cierre "Unite al ritual".
+ *
+ * Cierre emocional (Master Plan §5). No repite la newsletter: El Registro ya
+ * vive en la escena de agua, así que acá solo se lo señala.
+ */
 export const closingCopy = {
   eyebrow: "ORMONIA",
-  title: "Lo que cambia adentro se expresa afuera.",
-  body: "Un ritual que acompaña cada fase.",
+  title: "Unite al ritual.",
+  body: "Lo que cambia adentro se expresa afuera.",
+  links: [
+    { label: "Descubrir mi piel", href: "/descubri-tu-piel" },
+    { label: "Recibir El Registro", href: "/#ritmo" },
+  ],
 };
+
+/**
+ * Footer.
+ *
+ * Los destinos que todavía no existen (ayuda, políticas, redes) quedan en
+ * `null`: se ven como texto inerte y no inventan páginas ni textos legales.
+ * Completar `href` cuando cada página o cuenta exista.
+ */
+export interface FooterLink {
+  label: string;
+  href: string | null;
+}
 
 export const footerCopy = {
   /** Bajada aprobada de Los esenciales: el producto no queda atado a una fase. */
@@ -308,30 +408,39 @@ export const footerCopy = {
     {
       heading: "Tienda",
       links: [
-        { label: "Los serums", href: "/products" },
+        { label: "Los esenciales", href: "/products" },
+        { label: "Pack x4", href: "/#pack-x4" },
         { label: "CLARITY", href: "/products/clarity" },
         { label: "BLOOM", href: "/products/bloom" },
         { label: "RADIANCE", href: "/products/radiance" },
         { label: "RESTORE", href: "/products/restore" },
-      ],
+      ] as FooterLink[],
     },
     {
       heading: "Explorar",
       links: [
-        { label: "Aprender", href: "/learn" },
+        { label: "Sobre ORMONIA", href: "/about" },
+        { label: "Lecturas para el ritual", href: "/learn" },
         { label: "Descubrí tu piel", href: "/descubri-tu-piel" },
-        { label: "Nosotros", href: "/about" },
-      ],
+        { label: "El Registro", href: "/#ritmo" },
+      ] as FooterLink[],
     },
     {
-      heading: "Contacto",
+      heading: "Ayuda",
       links: [
-        { label: "El registro", href: "/#registro" },
-        { label: "Instagram", href: "/#instagram" },
-      ],
+        { label: "Envíos", href: null },
+        { label: "Cambios y devoluciones", href: null },
+        { label: "Preguntas frecuentes", href: null },
+        { label: "Contacto", href: null },
+      ] as FooterLink[],
     },
   ],
-  closing: "ORMONIA — Ritual, ritmo y botánica en armonía.",
+  social: [{ label: "Instagram", href: instagramCopy.profileUrl }] as FooterLink[],
+  legal: [
+    { label: "Términos y condiciones", href: null },
+    { label: "Política de privacidad", href: null },
+  ] as FooterLink[],
+  copyright: "ORMONIA",
 };
 
 export const notFoundCopy = {
