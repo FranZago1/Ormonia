@@ -51,10 +51,10 @@ const ProductDetail = () => {
           <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
             <ProductDisplay product={product} aspectRatio="4 / 5" />
             <div className="flex flex-col gap-6">
-              <ProductMeta product={product} />
               <EditorialHeading as="h1" size="xl">
                 {product.name}
               </EditorialHeading>
+              <ProductMeta product={product} />
               <NarrativeText size="lg" tone="muted" measure="normal">
                 {product.description}
               </NarrativeText>

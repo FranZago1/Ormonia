@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Product } from "@/data/products";
+import { phaseLabel, type Product } from "@/data/products";
 import { PlaceholderBlock } from "./PlaceholderBlock";
 
 interface ProductDisplayProps {
@@ -23,7 +23,7 @@ export function ProductDisplay({ product, className, aspectRatio }: ProductDispl
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-[#342115]/[0.025]" />
           <img
             src={product.imageSrc}
-            alt={`${product.name}${product.phase ? ` — fase ${product.phase}` : ""}`}
+            alt={`${product.name}${product.phase ? ` — referencia fase ${phaseLabel[product.phase].toLowerCase()}` : ""}`}
             className="h-full w-full object-contain p-[7%] transition-transform duration-700 ease-out group-hover:scale-[1.035]"
             loading="lazy"
           />
