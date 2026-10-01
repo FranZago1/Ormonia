@@ -28,12 +28,12 @@ const Learn = () => {
           <ReadingsHeader as="h1" />
           {featured && (
             <div className="mt-12 grid gap-12 md:mt-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
-              <FeaturedReading reading={featured} />
+              <FeaturedReading reading={featured} headingAs="h2" />
               {rest.length > 0 && (
                 <ol className="flex flex-col">
                   {rest.map((reading) => (
                     <li key={reading.id} className="border-t border-ink/14 last:border-b">
-                      <IndexReading reading={reading} />
+                      <IndexReading reading={reading} headingAs="h2" />
                     </li>
                   ))}
                 </ol>

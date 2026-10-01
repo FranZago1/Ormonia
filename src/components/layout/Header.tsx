@@ -176,7 +176,7 @@ export function Header({ defaultTone = "dark", overlay = false }: HeaderProps) {
   return (
     <>
       {/* Franja de envío: en el flujo del documento, queda atrás al scrollear. */}
-      <div ref={barRef}>
+      <div ref={barRef} role="region" aria-label="Aviso de envío">
         <AnnouncementBar />
       </div>
 

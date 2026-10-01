@@ -89,14 +89,14 @@ const DiscoverSkin = () => {
           ) : (
             quiz.question && (
               <div className="max-w-[560px]">
-                <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/50">
+                <p className="font-sans text-[10px] uppercase tracking-[0.24em] text-ink/66">
                   {quiz.question.category}
                 </p>
                 <h1 className="mt-6 font-display text-[clamp(1.75rem,2.9vw,2.5rem)] leading-[1.1] tracking-[-0.03em]">
                   {quiz.question.question}
                 </h1>
                 {quiz.question.helper && (
-                  <p className="mt-4 font-sans text-[13px] leading-relaxed text-ink/60">
+                  <p className="mt-4 font-sans text-[13px] leading-relaxed text-ink/66">
                     {quiz.question.helper}
                   </p>
                 )}
@@ -131,7 +131,7 @@ const DiscoverSkin = () => {
                 type="button"
                 onClick={() => transition(quiz.back)}
                 disabled={!quiz.canGoBack}
-                className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink/55 transition-colors duration-300 hover:text-ink disabled:pointer-events-none disabled:opacity-30"
+                className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink/66 transition-colors duration-300 hover:text-ink disabled:pointer-events-none disabled:opacity-30"
               >
                 {skinQuizCopy.back}
               </button>
@@ -151,7 +151,7 @@ const DiscoverSkin = () => {
               </button>
 
               {quiz.showRequiredHint && (
-                <span className="font-sans text-[11px] text-ink/60">
+                <span className="font-sans text-[11px] text-ink/66">
                   {skinQuizCopy.requiredHint}
                 </span>
               )}

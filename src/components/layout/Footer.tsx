@@ -44,14 +44,14 @@ export function Footer() {
             <p className="max-w-[300px] font-sans text-[13px] leading-relaxed text-ivory/62">
               {footerCopy.tagline}
             </p>
-            <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-ivory/50">
+            <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-ivory/62">
               {announcementCopy.message}
             </p>
           </div>
 
           {footerCopy.columns.map((col) => (
             <nav key={col.heading} aria-label={col.heading} className="flex flex-col gap-5">
-              <span className="font-sans text-[10px] uppercase tracking-[0.24em] text-ivory/50">
+              <span className="font-sans text-[10px] uppercase tracking-[0.24em] text-ivory/62">
                 {col.heading}
               </span>
               <FooterLinks links={col.links} className="flex flex-col gap-3" />
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-5 border-t border-ivory/14 py-8 md:flex-row md:items-center md:justify-between">
-          <p className="font-sans text-[11px] text-ivory/50">
+          <p className="font-sans text-[11px] text-ivory/62">
             © {year} {footerCopy.copyright}
           </p>
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:gap-10">

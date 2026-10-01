@@ -71,7 +71,7 @@ export function ReadingsHeader({ as: Heading = "h2" }: { as?: "h1" | "h2" }) {
   return (
     <div className="flex flex-col gap-6 text-ink md:flex-row md:items-end md:justify-between md:gap-12">
       <div>
-        <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-ink/62 md:text-[11px]">
+        <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-ink/66 md:text-[11px]">
           {learnCopy.eyebrow}
         </p>
         <Heading
@@ -91,7 +91,7 @@ export function ReadingsHeader({ as: Heading = "h2" }: { as?: "h1" | "h2" }) {
 /** Formato + etiqueta editorial, y "Próximamente" si la pieza no está publicada. */
 function ReadingMeta({ reading }: { reading: Reading }) {
   return (
-    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/62">
+    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/66">
       <span>{learnCopy.kindLabel[reading.kind]}</span>
       <span aria-hidden="true">·</span>
       <span>{reading.label}</span>
@@ -102,7 +102,7 @@ function ReadingMeta({ reading }: { reading: Reading }) {
         </>
       )}
       {!reading.href && (
-        <span className="ml-1 rounded-full border border-ink/18 px-2.5 py-0.5 tracking-[0.18em] text-ink/58">
+        <span className="ml-1 rounded-full border border-ink/18 px-2.5 py-0.5 tracking-[0.18em] text-ink/66">
           {learnCopy.soon}
         </span>
       )}
@@ -181,7 +181,16 @@ function ReadingFrame({
   );
 }
 
-export function FeaturedReading({ reading }: { reading: Reading }) {
+/** Nivel del titular de cada pieza: h3 bajo la sección de Home, h2 en /learn. */
+type PieceHeading = "h2" | "h3";
+
+export function FeaturedReading({
+  reading,
+  headingAs: Title = "h3",
+}: {
+  reading: Reading;
+  headingAs?: PieceHeading;
+}) {
   return (
     <ReadingFrame reading={reading} className="flex flex-col text-ink">
       <ReadingMedia
@@ -191,9 +200,9 @@ export function FeaturedReading({ reading }: { reading: Reading }) {
       />
       <div className="mt-6 md:mt-7">
         <ReadingMeta reading={reading} />
-        <h3 className="mt-4 max-w-[520px] font-display text-[clamp(1.6rem,4.6vw,2.1rem)] leading-[1.08] tracking-[-0.03em] decoration-ink/40 underline-offset-[6px] group-hover:underline">
+        <Title className="mt-4 max-w-[520px] font-display text-[clamp(1.6rem,4.6vw,2.1rem)] leading-[1.08] tracking-[-0.03em] decoration-ink/40 underline-offset-[6px] group-hover:underline">
           {reading.title}
-        </h3>
+        </Title>
         <p className="mt-3 max-w-[460px] font-sans text-[13px] leading-relaxed text-ink/64 md:text-[14px]">
           {reading.teaser}
         </p>
@@ -202,7 +211,13 @@ export function FeaturedReading({ reading }: { reading: Reading }) {
   );
 }
 
-export function IndexReading({ reading }: { reading: Reading }) {
+export function IndexReading({
+  reading,
+  headingAs: Title = "h3",
+}: {
+  reading: Reading;
+  headingAs?: PieceHeading;
+}) {
   return (
     <ReadingFrame
       reading={reading}
@@ -210,9 +225,9 @@ export function IndexReading({ reading }: { reading: Reading }) {
     >
       <div>
         <ReadingMeta reading={reading} />
-        <h3 className="mt-3 font-display text-[1.35rem] leading-[1.12] tracking-[-0.025em] decoration-ink/40 underline-offset-[5px] group-hover:underline md:text-[1.55rem]">
+        <Title className="mt-3 font-display text-[1.35rem] leading-[1.12] tracking-[-0.025em] decoration-ink/40 underline-offset-[5px] group-hover:underline md:text-[1.55rem]">
           {reading.title}
-        </h3>
+        </Title>
         <p className="mt-2.5 font-sans text-[13px] leading-relaxed text-ink/64">
           {reading.teaser}
         </p>

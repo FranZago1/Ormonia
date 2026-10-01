@@ -33,7 +33,7 @@ export function InstagramUniverseSection() {
       >
         <div className="flex flex-col gap-6 px-6 text-ink md:flex-row md:items-end md:justify-between md:gap-12 md:px-10">
           <div>
-            <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-ink/62 md:text-[11px]">
+            <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-ink/66 md:text-[11px]">
               {instagramCopy.handle ?? instagramCopy.eyebrow}
             </p>
             <h2

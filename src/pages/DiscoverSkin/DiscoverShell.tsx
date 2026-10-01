@@ -33,42 +33,44 @@ export function DiscoverShell({
 }: DiscoverShellProps) {
   return (
     <div className="flex min-h-[100svh] flex-col bg-ivory text-ink">
-      {progress !== null && (
-        <div
-          className="h-px w-full shrink-0 bg-ink/10"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(progress * 100)}
-          aria-label="Progreso del cuestionario"
-        >
+      <header className="shrink-0">
+        {progress !== null && (
           <div
-            className="h-full bg-ink/70 motion-safe:transition-[width] motion-safe:duration-500 motion-safe:ease-out"
-            style={{ width: `${Math.max(0, Math.min(1, progress)) * 100}%` }}
-          />
-        </div>
-      )}
+            className="h-px w-full shrink-0 bg-ink/10"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(progress * 100)}
+            aria-label="Progreso del cuestionario"
+          >
+            <div
+              className="h-full bg-ink/70 motion-safe:transition-[width] motion-safe:duration-500 motion-safe:ease-out"
+              style={{ width: `${Math.max(0, Math.min(1, progress)) * 100}%` }}
+            />
+          </div>
+        )}
 
-      <header className="flex shrink-0 items-center justify-between px-6 py-5 md:px-10">
-        <Link
-          to="/"
-          className="font-display text-[17px] uppercase leading-none tracking-[0.2em] text-ink md:text-[19px]"
-        >
-          {skinQuizCopy.brand}
-        </Link>
-
-        <div className="flex items-center gap-6">
-          {stepLabel && (
-            <span className="font-sans text-[10px] uppercase tracking-[0.22em] text-ink/45">
-              {stepLabel}
-            </span>
-          )}
+        <div className="flex items-center justify-between px-6 py-5 md:px-10">
           <Link
             to="/"
-            className="font-sans text-[10px] uppercase tracking-[0.2em] text-ink/60 transition-colors duration-300 hover:text-ink"
+            className="font-display text-[17px] uppercase leading-none tracking-[0.2em] text-ink md:text-[19px]"
           >
-            {skinQuizCopy.close}
+            {skinQuizCopy.brand}
           </Link>
+
+          <div className="flex items-center gap-6">
+            {stepLabel && (
+              <span className="font-sans text-[10px] uppercase tracking-[0.22em] text-ink/66">
+                {stepLabel}
+              </span>
+            )}
+            <Link
+              to="/"
+              className="font-sans text-[10px] uppercase tracking-[0.2em] text-ink/66 transition-colors duration-300 hover:text-ink"
+            >
+              {skinQuizCopy.close}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -76,7 +78,9 @@ export function DiscoverShell({
         <div className="relative hidden lg:block">
           <DiscoverVisual group={visualGroup} />
         </div>
-        <div className="flex min-h-0 flex-col">{children}</div>
+        <main id="main" className="flex min-h-0 flex-col">
+          {children}
+        </main>
       </div>
     </div>
   );

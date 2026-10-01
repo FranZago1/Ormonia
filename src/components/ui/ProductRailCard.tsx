@@ -104,7 +104,7 @@ export function ProductRailCard({ product }: ProductRailCardProps) {
         </div>
 
         {actives && (
-          <p className="mt-2 font-sans text-[10px] leading-[1.6] tracking-[0.06em] text-ink/62 md:text-[11px]">
+          <p className="mt-2 font-sans text-[10px] leading-[1.6] tracking-[0.06em] text-ink/66 md:text-[11px]">
             {actives}
           </p>
         )}
