@@ -41,8 +41,7 @@ function snooze() {
  * o por scroll (lo que ocurra primero, nunca al cargar), se puede cerrar y
  * recuerda el cierre en session/localStorage con una frecuencia razonable.
  *
- * NO implementa el quiz: el CTA resuelve provisionalmente en /discover.
- * La lógica de fenotipos pertenece al Sprint 07.
+ * El CTA lleva al diagnóstico real, `/descubri-tu-piel`.
  */
 export function DiscoverPopup() {
   const [open, setOpen] = useState(false);
@@ -96,7 +95,7 @@ export function DiscoverPopup() {
       aria-labelledby="discover-popup-title"
       aria-describedby="discover-popup-body"
       className={cn(
-        "fixed bottom-5 left-5 right-5 z-[60] max-w-[380px] border border-ink/10 bg-ivory/95 p-7 shadow-[0_24px_60px_rgba(52,33,21,0.16)] backdrop-blur-xl",
+        "fixed bottom-4 left-4 right-4 z-[60] max-w-[380px] border border-ink/10 bg-ivory/95 p-6 sm:p-7 shadow-[0_24px_60px_rgba(52,33,21,0.16)] backdrop-blur-xl",
         "motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700",
         "sm:left-7 sm:right-auto sm:bottom-7"
       )}
@@ -115,7 +114,7 @@ export function DiscoverPopup() {
       </p>
       <h2
         id="discover-popup-title"
-        className="mt-4 font-display text-[2rem] leading-[1.02] tracking-[-0.03em] text-ink"
+        className="mt-3 font-display text-[1.75rem] leading-[1.02] sm:mt-4 sm:text-[2rem] tracking-[-0.03em] text-ink"
       >
         {discoverPopupCopy.title}
       </h2>
@@ -129,7 +128,7 @@ export function DiscoverPopup() {
         {discoverPopupCopy.incentive}
       </p>
 
-      <div className="mt-7 flex items-center gap-6">
+      <div className="mt-6 flex items-center gap-6 sm:mt-7">
         <Link
           to={discoverPopupCopy.ctaHref}
           onClick={dismiss}

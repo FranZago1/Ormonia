@@ -1,8 +1,8 @@
+import { Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Learn from "./pages/Learn";
-import Discover from "./pages/Discover";
 import DiscoverSkin from "./pages/DiscoverSkin";
 import DiscoverSkinResult from "./pages/DiscoverSkin/Result";
 import About from "./pages/About";
@@ -29,10 +29,14 @@ export const routers = [
     name: "learn",
     element: <Learn />,
   },
+  /*
+   * Ruta legacy. El diagnóstico real vive en /descubri-tu-piel; se redirige
+   * para no romper links viejos. `pages/Discover.tsx` se conserva en el repo.
+   */
   {
     path: "/discover",
     name: "discover",
-    element: <Discover />,
+    element: <Navigate to="/descubri-tu-piel" replace />,
   },
   {
     path: "/descubri-tu-piel",

@@ -37,7 +37,7 @@ export const nav = {
     { label: "Tienda", href: "/products" },
     { label: "Sobre Ormonia", href: "/about" },
     { label: "Explorar", href: "/learn" },
-    { label: "Descubrir tu ritual", href: "/discover" },
+    { label: "Descubrí tu piel", href: "/descubri-tu-piel" },
     // Placeholder: futuro punto de entrada al carrito/ritual (se conectará en un sprint posterior).
     { label: "Tu ritual", href: null as string | null },
   ],
@@ -52,17 +52,23 @@ export const heroCopy = {
 };
 
 /**
- * Popup diferido de descubrimiento (Sprint 01).
- * No implementa el quiz: solo la invitación. La lógica de fenotipos se define
- * en Sprint 07, cuando la CEO cierre el modelo.
+ * Popup diferido de descubrimiento.
+ *
+ * Invita al diagnóstico real (`/descubri-tu-piel`). "Fenotipo" aparece solo
+ * como microcopy secundario (eyebrow) y no se define: el modelo de fenotipos
+ * todavía no existe (Sprint 07B). El cuerpo reutiliza la bajada aprobada de
+ * la entrada en Home, sin atar la piel al ciclo.
+ *
+ * `incentive`: el 5% está aprobado en el Master Plan pero todavía no hay
+ * mecanismo para aplicarlo (Shopify). Se mantiene el texto existente.
  */
 export const discoverPopupCopy = {
-  eyebrow: "Descubrimiento",
+  eyebrow: "Fenotipo de piel",
   title: "Descubrí tu piel",
-  body: "Tu fenotipo describe cómo responde tu piel a lo largo del ciclo. Reconocerlo es el primer gesto para construir un ritual más propio.",
+  body: "Un recorrido breve para entender cómo se comporta tu piel y qué necesita hoy.",
   incentive: "5% off en tu primer ritual",
   cta: "Descubrir mi piel",
-  ctaHref: "/discover",
+  ctaHref: "/descubri-tu-piel",
   dismiss: "Ahora no",
   close: "Cerrar",
 };
@@ -312,7 +318,7 @@ export const footerCopy = {
       heading: "Explorar",
       links: [
         { label: "Aprender", href: "/learn" },
-        { label: "Descubre", href: "/discover" },
+        { label: "Descubrí tu piel", href: "/descubri-tu-piel" },
         { label: "Nosotros", href: "/about" },
       ],
     },
